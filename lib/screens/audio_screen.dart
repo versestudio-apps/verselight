@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/sample_audio.dart';
 import '../models/audio_track.dart';
-import '../utils/routes.dart';
+import '../utils/premium_access.dart';
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
 import '../widgets/premium_gate.dart';
@@ -61,8 +61,10 @@ class AudioScreen extends StatelessWidget {
 
   void _onPlay(BuildContext context, AudioTrack track) {
     final appState = AppStateScope.of(context);
-    if (track.isPremium && !appState.isPremium) {
-      AppRoutes.openPaywall(context);
+    if (!PremiumAccess.guardNavigation(
+      context,
+      contentIsPremium: track.isPremium,
+    )) {
       return;
     }
     final isSame = appState.playingAudioId == track.id;

@@ -5,7 +5,7 @@ import '../screens/devotional_detail_screen.dart';
 import '../screens/paywall_screen.dart';
 import '../screens/plan_detail_screen.dart';
 import '../screens/settings_screen.dart';
-import '../widgets/app_state_scope.dart';
+import 'premium_access.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -30,9 +30,10 @@ class AppRoutes {
     final devo = ContentLibrary.devotionalById(id);
     if (devo == null) return;
 
-    final appState = AppStateScope.of(context);
-    if (devo.isPremium && !appState.isPremium) {
-      openPaywall(context);
+    if (!PremiumAccess.guardNavigation(
+      context,
+      contentIsPremium: devo.isPremium,
+    )) {
       return;
     }
 
@@ -47,9 +48,10 @@ class AppRoutes {
     final plan = ContentLibrary.planById(id);
     if (plan == null) return;
 
-    final appState = AppStateScope.of(context);
-    if (plan.isPremium && !appState.isPremium) {
-      openPaywall(context);
+    if (!PremiumAccess.guardNavigation(
+      context,
+      contentIsPremium: plan.isPremium,
+    )) {
       return;
     }
 
@@ -58,9 +60,5 @@ class AppRoutes {
         builder: (_) => PlanDetailScreen(plan: plan),
       ),
     );
-  }
-
-  static Future<void> notifyPremiumChanged(BuildContext context) async {
-    await AppStateScope.of(context).onPremiumPurchased();
   }
 }

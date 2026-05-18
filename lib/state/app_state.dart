@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../data/content_library.dart';
+import '../models/premium_entitlement.dart';
 import '../models/prayer_entry.dart';
 import '../services/iap_service.dart';
 import '../services/local_storage_service.dart';
@@ -20,10 +21,15 @@ class AppState extends ChangeNotifier {
 
   bool get isPremium => IapService.instance.isPremium;
 
+  PremiumEntitlement get premiumEntitlement =>
+      IapService.instance.getCurrentEntitlement();
+
   final LocalStorageService _storage = LocalStorageService.instance;
 
   Future<void> loadFromStorage() async {
     try {
+      await IapService.instance.initialize();
+
       journalEntries
         ..clear()
         ..addAll(await _storage.loadJournalEntries());
@@ -51,9 +57,6 @@ class AppState extends ChangeNotifier {
       _sanitizePlanProgress();
 
       playingAudioId = await _storage.loadPlayingAudioId();
-
-      final premium = await _storage.loadPremiumUnlocked();
-      IapService.instance.setPremiumForDemo(premium);
     } catch (e, st) {
       debugPrint('[AppState] load failed, using defaults: $e\n$st');
     }
@@ -85,7 +88,7 @@ class AppState extends ChangeNotifier {
     completedDevotionalIds.clear();
     planCurrentDay.clear();
     playingAudioId = null;
-    IapService.instance.setPremiumForDemo(false);
+    await IapService.instance.clearEntitlement();
     notifyListeners();
   }
 
@@ -169,10 +172,12 @@ class AppState extends ChangeNotifier {
     unawaited(_storage.savePlanProgress(Map.from(planCurrentDay)));
   }
 
-  Future<void> onPremiumPurchased() async {
-    IapService.instance.setPremiumForDemo(true);
+  Future<void> refreshPremiumEntitlement() async {
     notifyListeners();
-    unawaited(_storage.savePremiumUnlocked(true));
+  }
+
+  Future<void> onPremiumPurchased() async {
+    notifyListeners();
   }
 
   void onPremiumUpdated() => notifyListeners();

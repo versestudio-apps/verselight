@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/prayer_entry.dart';
+import '../models/premium_entitlement.dart';
 
 /// Keys versioned so schema can evolve without corrupting old installs.
 abstract final class _Keys {
   static const journalEntries = 'journal_entries_v1';
   static const premiumUnlocked = 'premium_unlocked_v1';
+  static const premiumEntitlement = 'premium_entitlement_v1';
   static const startedPlanIds = 'started_plan_ids_v1';
   static const completedDevotionalIds = 'completed_devotional_ids_v1';
   static const playingAudioId = 'playing_audio_id_v1';
@@ -87,6 +89,35 @@ class LocalStorageService {
       await _store.setBool(_Keys.premiumUnlocked, value);
     } catch (e, st) {
       debugPrint('[LocalStorage] premium save failed: $e\n$st');
+    }
+  }
+
+  Future<PremiumEntitlement?> loadPremiumEntitlement() async {
+    try {
+      final raw = _store.getString(_Keys.premiumEntitlement);
+      if (raw == null || raw.isEmpty) return null;
+
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map) return null;
+
+      return PremiumEntitlement.fromJson(
+        Map<String, dynamic>.from(decoded),
+      );
+    } catch (e, st) {
+      debugPrint('[LocalStorage] entitlement load failed: $e\n$st');
+      return null;
+    }
+  }
+
+  Future<void> savePremiumEntitlement(PremiumEntitlement entitlement) async {
+    try {
+      await _store.setString(
+        _Keys.premiumEntitlement,
+        jsonEncode(entitlement.toJson()),
+      );
+      await savePremiumUnlocked(entitlement.isActive);
+    } catch (e, st) {
+      debugPrint('[LocalStorage] entitlement save failed: $e\n$st');
     }
   }
 
@@ -192,6 +223,7 @@ class LocalStorageService {
     try {
       await _store.remove(_Keys.journalEntries);
       await _store.remove(_Keys.premiumUnlocked);
+      await _store.remove(_Keys.premiumEntitlement);
       await _store.remove(_Keys.startedPlanIds);
       await _store.remove(_Keys.completedDevotionalIds);
       await _store.remove(_Keys.playingAudioId);

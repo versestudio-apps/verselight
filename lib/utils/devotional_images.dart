@@ -31,8 +31,6 @@ class DevotionalImages {
   static const String bibleRosaryCandle = '${_base}bible_rosary_candle.png';
   static const String journalPrayer = '${_base}journal_prayer.png';
   static const String familyPrayer = '${_base}family_prayer.png';
-  static const String eucharisticAdoration =
-      '${_base}eucharistic_adoration.png';
   static const String guardianAngelChild =
       '${_base}guardian_angel_child.png';
 
@@ -63,7 +61,6 @@ class DevotionalImages {
     bibleRosaryCandle,
     journalPrayer,
     familyPrayer,
-    eucharisticAdoration,
     guardianAngelChild,
     // Portrait masters
     catholicShepherd,

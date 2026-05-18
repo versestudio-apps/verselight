@@ -41,5 +41,4 @@ running even before the artwork ships.
 | `bible_rosary_candle.png` | Shop hero · Bible category devotionals |
 | `journal_prayer.png` | Journal hero / empty state · Prayer-Reset plan |
 | `family_prayer.png` | Gratitude plan · family devotionals |
-| `eucharistic_adoration.png` | Paywall alternate hero |
 | `guardian_angel_child.png` | Paywall hero · Night devotionals |

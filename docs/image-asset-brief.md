@@ -87,18 +87,12 @@ tone description. In short:
   parents and child silhouettes, warm soft tones. Faces optional.
 - **Used on:** Gratitude plan, family devotionals.
 
-### 11. `eucharistic_adoration.png`
-- **Scene:** A monstrance on an altar with soft golden rays, a single
-  kneeling figure from behind, candlelit. Reverent but not heavy.
-- **Used on:** Paywall alternate hero (kept in the manifest for
-  rotation).
-
-### 12. `guardian_angel_child.png`
+### 11. `guardian_angel_child.png`
 - **Scene:** A guardian angel watching over a sleeping or praying
   child, soft moonlight or dawn, warm gold and Marian blue.
 - **Used on:** Paywall primary hero, Night devotionals.
 
-### 13. `saint_michael.png`
+### 12. `saint_michael.png`
 - **Scene:** Symbolic St Michael — sword and shield, soft watercolor
   light, calm rather than dramatic. Not a battle scene.
 - **Used on:** Courage / Faith devotionals, alternate plan artwork.

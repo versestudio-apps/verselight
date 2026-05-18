@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../models/subscription_product.dart';
 import '../services/iap_service.dart';
+import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
+import '../widgets/devotional_image.dart';
 import '../widgets/soft_icon_badge.dart';
 
 class PaywallScreen extends StatefulWidget {
@@ -138,32 +140,57 @@ class _PaywallScreenState extends State<PaywallScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 22),
-          Center(
-            child: Container(
-              width: 76,
-              height: 76,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFFFF6E1),
-                    Color(0xFFF5EFE3),
-                  ],
-                ),
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.goldTint),
-                boxShadow: AppShadows.soft,
-              ),
-              child: const Icon(
-                Icons.auto_awesome_rounded,
-                size: 38,
-                color: AppColors.warmGold,
+          const SizedBox(height: 16),
+          DevotionalHeroImage(
+            assetPath: DevotionalImages.paywallHero,
+            aspectRatio: 16 / 9,
+            darken: 0.22,
+            semanticLabel: 'Gentle guardian-angel devotional artwork',
+            overlay: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      borderRadius:
+                          BorderRadius.circular(AppRadii.pill),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.55),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(
+                          Icons.auto_awesome_rounded,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          'VERSELIGHT PREMIUM',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10.5,
+                            letterSpacing: 1.2,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           Text(
             'Grow closer to God,\none day at a time',
             textAlign: TextAlign.center,

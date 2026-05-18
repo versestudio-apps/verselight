@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../models/plan_day.dart';
 import '../models/reading_plan.dart';
+import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
+import '../widgets/devotional_image.dart';
 
 class PlanDetailScreen extends StatelessWidget {
   const PlanDetailScreen({super.key, required this.plan});
@@ -34,92 +36,97 @@ class PlanDetailScreen extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [AppColors.surface, AppColors.softCream],
-                  ),
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(AppRadii.card),
                   border: Border.all(color: AppColors.border),
                   boxShadow: AppShadows.soft,
                 ),
-                padding: const EdgeInsets.all(20),
+                clipBehavior: Clip.antiAlias,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: AppColors.goldTint
-                                .withValues(alpha: 0.45),
-                            borderRadius: BorderRadius.circular(18),
+                    DevotionalImage(
+                      assetPath: DevotionalImages.forPlanId(plan.id),
+                      height: 160,
+                      width: double.infinity,
+                      borderRadius: BorderRadius.zero,
+                      semanticLabel: plan.title,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(plan.title,
+                              style: theme.textTheme.titleLarge),
+                          const SizedBox(height: 4),
+                          Text(
+                            plan.subtitle,
+                            style: theme.textTheme.bodyMedium,
                           ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            plan.emoji,
-                            style: const TextStyle(fontSize: 36),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          const SizedBox(height: 8),
+                          Row(
                             children: [
-                              Text(plan.title,
-                                  style: theme.textTheme.titleLarge),
-                              const SizedBox(height: 4),
-                              Text(
-                                plan.subtitle,
-                                style: theme.textTheme.bodyMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                '${plan.durationDays} days · ${plan.category}',
-                                style:
-                                    theme.textTheme.labelMedium?.copyWith(
-                                  color: AppColors.warmGold,
-                                  letterSpacing: 0.4,
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.marianBlueLight,
+                                  borderRadius:
+                                      BorderRadius.circular(AppRadii.pill),
+                                ),
+                                child: Text(
+                                  '${plan.durationDays} days · ${plan.category}',
+                                  style: theme.textTheme.labelMedium
+                                      ?.copyWith(
+                                    color: AppColors.marianBlue,
+                                    fontSize: 11.5,
+                                    letterSpacing: 0.4,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    if (started) ...[
-                      const SizedBox(height: 18),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            isFinished ? 'Completed' : 'Your progress',
-                            style: theme.textTheme.labelLarge,
-                          ),
-                          Text(
-                            isFinished
-                                ? 'All ${plan.durationDays} days'
-                                : 'Day $currentDay of ${plan.durationDays}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppColors.sageGreen,
-                              fontWeight: FontWeight.w600,
+                          if (started) ...[
+                            const SizedBox(height: 18),
+                            Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  isFinished
+                                      ? 'Completed'
+                                      : 'Your progress',
+                                  style: theme.textTheme.labelLarge,
+                                ),
+                                Text(
+                                  isFinished
+                                      ? 'All ${plan.durationDays} days'
+                                      : 'Day $currentDay of ${plan.durationDays}',
+                                  style:
+                                      theme.textTheme.bodySmall?.copyWith(
+                                    color: AppColors.sageGreen,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                            const SizedBox(height: 10),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: LinearProgressIndicator(
+                                value: isFinished ? 1.0 : progress,
+                                minHeight: 8,
+                                backgroundColor: AppColors.border,
+                                color: AppColors.sageGreen,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: LinearProgressIndicator(
-                          value: isFinished ? 1.0 : progress,
-                          minHeight: 8,
-                          backgroundColor: AppColors.border,
-                          color: AppColors.sageGreen,
-                        ),
-                      ),
-                    ],
+                    ),
                   ],
                 ),
               ),

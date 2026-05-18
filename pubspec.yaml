@@ -23,3 +23,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    # AI-generated, app-owned devotional artwork (see
+    # docs/visual-direction-catholic.md). Missing files fall back to a
+    # gradient placeholder via DevotionalImage, so the app keeps building
+    # even before every PNG ships.
+    - assets/images/devotional/

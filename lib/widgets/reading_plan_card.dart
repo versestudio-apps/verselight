@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../models/reading_plan.dart';
+import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
+import 'devotional_image.dart';
 
 class ReadingPlanCard extends StatelessWidget {
   const ReadingPlanCard({
@@ -42,25 +44,19 @@ class ReadingPlanCard extends StatelessWidget {
             boxShadow: AppShadows.hairline,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: AppColors.softCream,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        plan.emoji,
-                        style: const TextStyle(fontSize: 28),
-                      ),
+                    DevotionalImage(
+                      assetPath: DevotionalImages.forPlanId(plan.id),
+                      width: 78,
+                      height: 78,
+                      borderRadius: BorderRadius.circular(16),
+                      semanticLabel: plan.title,
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -84,31 +80,45 @@ class ReadingPlanCard extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            '${plan.durationDays} days · ${plan.category}',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: AppColors.warmGold,
-                              letterSpacing: 0.4,
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
                             ),
+                            decoration: BoxDecoration(
+                              color: AppColors.marianBlueLight,
+                              borderRadius:
+                                  BorderRadius.circular(AppRadii.pill),
+                            ),
+                            child: Text(
+                              '${plan.durationDays} days · ${plan.category}',
+                              style:
+                                  theme.textTheme.labelMedium?.copyWith(
+                                color: AppColors.marianBlue,
+                                fontSize: 11,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            plan.subtitle,
+                            style: theme.textTheme.bodySmall,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(width: 4),
                     const Icon(
                       Icons.chevron_right_rounded,
                       color: AppColors.slate,
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  plan.subtitle,
-                  style: theme.textTheme.bodyMedium,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
                 if (isStarted) ...[
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
                       Container(

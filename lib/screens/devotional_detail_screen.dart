@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../models/devotional.dart';
+import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
 import '../widgets/content_section.dart';
+import '../widgets/devotional_image.dart';
 
 class DevotionalDetailScreen extends StatefulWidget {
   const DevotionalDetailScreen({super.key, required this.devotional});
@@ -74,8 +76,16 @@ class _DevotionalDetailScreenState extends State<DevotionalDetailScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 40),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
         children: [
+          DevotionalHeroImage(
+            assetPath:
+                DevotionalImages.forDevotionalCategory(devotional.category),
+            aspectRatio: 16 / 9,
+            darken: 0.15,
+            semanticLabel: 'Devotional artwork for ${devotional.title}',
+          ),
+          const SizedBox(height: 18),
           Wrap(
             spacing: 8,
             runSpacing: 8,

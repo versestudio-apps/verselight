@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/sample_devotionals.dart';
 import '../models/devotional.dart';
+import '../utils/devotional_images.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
 import '../widgets/affiliate_banner.dart';
@@ -64,6 +65,8 @@ class HomeScreen extends StatelessWidget {
                 verseText: today.verseText,
                 verseRef: today.verseRef,
                 preview: today.bodyPreview,
+                imagePath:
+                    DevotionalImages.forDevotionalCategory(today.category),
                 isCompleted: completed,
                 onTap: () =>
                     AppRoutes.openDevotionalDetail(context, today.id),

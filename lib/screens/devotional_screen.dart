@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/devotional_filters.dart';
 import '../data/sample_devotionals.dart';
+import '../utils/devotional_images.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
 import '../widgets/affiliate_banner.dart';
@@ -124,6 +125,9 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                         verseText: devo.verseText,
                         verseRef: devo.verseRef,
                         bodyPreview: devo.bodyPreview,
+                        imagePath: DevotionalImages.forDevotionalCategory(
+                          devo.category,
+                        ),
                         isPremium: devo.isPremium,
                         isCompleted:
                             appState.isDevotionalCompleted(devo.id),

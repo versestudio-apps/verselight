@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
+import '../widgets/devotional_image.dart';
 import '../widgets/journal_note_card.dart';
 import '../widgets/screen_app_bar.dart';
 import '../widgets/soft_icon_badge.dart';
@@ -181,21 +183,23 @@ class _EmptyJournal extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Center(
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SoftIconBadge(
-              icon: Icons.favorite_rounded,
-              color: AppColors.sageGreen,
-              size: 72,
-              iconSize: 32,
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 320),
+              child: DevotionalImage(
+                assetPath: DevotionalImages.journalHero,
+                height: 180,
+                semanticLabel: 'Open journal with rosary and candle',
+              ),
             ),
             const SizedBox(height: 20),
             Text(
-              'Start your journal',
+              'Start your prayer journal',
               style: theme.textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),

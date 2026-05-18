@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../data/sample_audio.dart';
 import '../models/audio_track.dart';
+import '../utils/devotional_images.dart';
 import '../utils/premium_access.dart';
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
+import '../widgets/devotional_image.dart';
 import '../widgets/premium_gate.dart';
 import '../widgets/screen_app_bar.dart';
 import '../widgets/soft_icon_badge.dart';
@@ -129,40 +131,35 @@ class _AudioTrackCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
               children: [
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: isPlaying
-                          ? [
-                              AppColors.goldTint
-                                  .withValues(alpha: 0.85),
-                              AppColors.softCream,
-                            ]
-                          : [
-                              AppColors.softCream,
-                              AppColors.ivory,
-                            ],
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                Stack(
                   alignment: Alignment.center,
-                  child: Icon(
-                    isPlaying
-                        ? Icons.pause_rounded
-                        : (track.isPremium
-                            ? Icons.auto_awesome_rounded
-                            : Icons.play_arrow_rounded),
-                    color: isPlaying
-                        ? AppColors.warmGold
-                        : (track.isPremium
-                            ? AppColors.warmGold
-                            : AppColors.sageGreen),
-                    size: 26,
-                  ),
+                  children: [
+                    DevotionalImage(
+                      assetPath: DevotionalImages.forAudioId(track.id),
+                      width: 56,
+                      height: 56,
+                      borderRadius: BorderRadius.circular(14),
+                      semanticLabel: track.title,
+                    ),
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        isPlaying
+                            ? Icons.pause_rounded
+                            : (track.isPremium
+                                ? Icons.auto_awesome_rounded
+                                : Icons.play_arrow_rounded),
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 14),
                 Expanded(

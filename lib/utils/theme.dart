@@ -27,6 +27,12 @@ class AppColors {
   static const Color deepIndigo = Color(0xFF38406B);
   static const Color softRose = Color(0xFFB96B6B);
 
+  // ---- Bright Catholic Devotional accents (Phase 07D) ----
+  // Marian blue — used sparingly for Catholic devotional accents
+  // (verse pills, plan badges, paywall halo). Lighter shade is for tints.
+  static const Color marianBlue = Color(0xFF5A7BA8);
+  static const Color marianBlueLight = Color(0xFFE1EAF4);
+
   // ---- Back-compat aliases used by existing screens ----
   static const Color cream = ivory;
   static const Color parchment = softCream;

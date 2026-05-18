@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../services/affiliate_service.dart';
+import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import '../widgets/affiliate_banner.dart';
 import '../widgets/app_section_header.dart';
+import '../widgets/devotional_image.dart';
 import '../widgets/screen_app_bar.dart';
 import '../widgets/soft_icon_badge.dart';
 
@@ -19,16 +21,37 @@ class ShopScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 6, 20, 28),
         children: [
-          Text(
-            'Curated resources',
-            style: theme.textTheme.displaySmall?.copyWith(fontSize: 26),
+          DevotionalHeroImage(
+            assetPath: DevotionalImages.shopHero,
+            aspectRatio: 16 / 9,
+            darken: 0.18,
+            semanticLabel: 'Bible, rosary, and candle still life',
+            overlay: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Curated resources',
+                    style:
+                        theme.textTheme.displaySmall?.copyWith(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Books and audio we think may bless your walk.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.92),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            'Books and audio we think may bless your walk.',
-            style: theme.textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           const _AffiliateDisclosure(),
           const SizedBox(height: 22),
           _ShopSectionHeader(

@@ -80,17 +80,68 @@ All three must finish without errors.
 - [ ] Add `INTERNET` to the main manifest **only** when a real network feature
       (Firebase Auth, Analytics, AI backend, etc.) is wired up.
 
-### 8. Visual assets (deferred — Phase 07)
+### 8. Visual assets (Phase 07 — in progress)
 
-- [ ] **App icon**: `android/app/src/main/res/mipmap-*` still contains the
-      default Flutter launcher icon. Replace with a 512×512 master + adaptive
-      icon foreground/background before the first store submission. Recommended:
-      `flutter_launcher_icons` package.
-- [ ] **Splash**: `android/app/src/main/res/drawable/launch_background.xml` is
-      still a plain white background. Replace with branded splash before
-      submission. Recommended: `flutter_native_splash` package.
-- [ ] **Store listing assets**: 512×512 store icon, feature graphic, and ≥3
-      screenshots per device class — produced outside this repo.
+**Done in this repo:**
+
+- Splash background switched from raw white to brand cream
+  (`@color/brand_cream` = `#FFF9F2`) in
+  `android/app/src/main/res/values/colors.xml` +
+  `drawable[-v21]/launch_background.xml` +
+  `values[-night]/styles.xml` — splash now blends smoothly into
+  `AppColors.cream` (`lib/utils/theme.dart`).
+- App theme already in brand voice: Lora (serif) headlines + Inter body,
+  gold primary, sage secondary, warm-brown text, 16/12 card/button radii.
+
+**Still required before first store submission:**
+
+- [ ] **App icon** — `android/app/src/main/res/mipmap-*` still holds the
+      default Flutter "F" launcher PNG. Replace with brand artwork:
+  - 512×512 master PNG (Play Store + Amazon listing)
+  - 1024×1024 master if also targeting iOS later
+  - Adaptive icon (Android 8+): 108×108 dp foreground + background
+    (`drawable/ic_launcher_foreground.xml` and
+    `mipmap-anydpi-v26/ic_launcher.xml`)
+  - Round icon variant (`mipmap-*/ic_launcher_round.png`)
+  - Recommended tooling: add `flutter_launcher_icons` to `dev_dependencies`
+    only when the master PNG is ready. Do **not** add the package without
+    artwork — it would silently overwrite the default with empty output.
+- [ ] **Splash artwork** — current splash is a solid cream rectangle. Once
+      a brand wordmark/symbol exists, drop it into `drawable*/` and
+      uncomment the centered `<bitmap>` block in `launch_background.xml`
+      (TODOs left in both files). Optional: switch to
+      `flutter_native_splash` once artwork is ready.
+- [ ] **Store listing graphics** (produced outside this repo):
+  - Google Play: 512×512 icon, 1024×500 feature graphic, ≥2 phone
+    screenshots (16:9 or 9:16, min 320 px), optional 7-inch / 10-inch
+    tablet screenshots.
+  - Amazon Appstore: 512×512 icon, 1024×500 small banner, 1920×1080
+    promo image (if featured), ≥3 screenshots per supported device class
+    (Phone, Fire HD 8 800×1280, Fire HD 10 1200×1920).
+
+### 9. Store screenshots — capture checklist
+
+Screenshots are **not** produced in-repo. When ready, capture each screen
+on at least one phone emulator and (if targeting Amazon) one Fire tablet
+emulator. Reset local data first (`Settings → Reset local data`) so the
+demo state looks clean.
+
+| # | Screen | Route / how to reach | What to show |
+|---|--------|----------------------|--------------|
+| 1 | Home | `BottomNav → Home` | Verse of the day + today's devotional card |
+| 2 | Devotional detail | tap a devotional card | Title, verse, body, journal entry CTA |
+| 3 | Journal | `BottomNav → Journal` | List with ≥2 sample entries |
+| 4 | Reading Plan detail | `Plans → tap a plan` | Plan title, progress bar, day list |
+| 5 | Audio | `Plans → Audio` or bottom nav | Player UI with a sample track loaded |
+| 6 | Shop | `BottomNav → Shop` | Affiliate disclosure + at least one banner |
+| 7 | Paywall | tap `Upgrade` in Settings or a locked card | Plans, "Restore purchases", legal links |
+| 8 | Settings | `BottomNav → Settings` | Premium tile, Legal links, affiliate footer |
+
+Suggested device matrix (none are produced in this phase, just listed):
+
+- Phone: Pixel 6 API 34 emulator (1080×2400).
+- Fire tablet: Fire HD 8 emulator profile or a real Fire HD 8 (800×1280).
+- Optional: Fire HD 10 (1200×1920) if listing on Amazon.
 
 ### 9. Build verification
 
@@ -113,8 +164,8 @@ before uploading to either store — see SETUP_GUIDE.md step 9.
 | 03 — Content library + reading polish | ✅ |
 | 04 — Offline content & plan progress | ✅ |
 | 05 — Premium / IAP mock architecture | ✅ |
-| 06 — Store readiness audit (this phase) | ✅ checklist landed |
-| 07 — Real icon / splash / store assets | ⏳ |
+| 06 — Store readiness audit | ✅ checklist landed |
+| 07 — Visual identity basics (splash + theme audit + asset checklist) | ✅ splash on-brand; icon/wordmark pending real artwork |
 | 08 — Real Google Play Billing / Amazon IAP | ⏳ |
 | 09 — Firebase Auth / Firestore (if needed) | ⏳ |
 | 10 — AI Prayer Partner via secure backend | ⏳ |

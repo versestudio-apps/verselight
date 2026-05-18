@@ -29,103 +29,134 @@ class ReadingPlanCard extends StatelessWidget {
             ? (completedDays / plan.durationDays).clamp(0.0, 1.0)
             : 0.0);
 
-    return Card(
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(plan.emoji, style: const TextStyle(fontSize: 32)),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                plan.title,
-                                style: theme.textTheme.titleMedium,
-                              ),
-                            ),
-                            if (plan.isPremium)
-                              const Icon(Icons.lock_rounded,
-                                  size: 18, color: AppColors.premium),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${plan.durationDays} days · ${plan.category}',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: AppColors.gold,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right_rounded,
-                      color: AppColors.warmBrownMuted),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                plan.subtitle,
-                style: theme.textTheme.bodyMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (isStarted) ...[
-                const SizedBox(height: 12),
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadii.card),
+            border: Border.all(color: AppColors.border),
+            boxShadow: AppShadows.hairline,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
+                      width: 56,
+                      height: 56,
                       decoration: BoxDecoration(
-                        color: finished
-                            ? AppColors.goldSoft.withValues(alpha: 0.5)
-                            : AppColors.sageLight,
-                        borderRadius: BorderRadius.circular(8),
+                        color: AppColors.softCream,
+                        borderRadius: BorderRadius.circular(16),
                       ),
+                      alignment: Alignment.center,
                       child: Text(
-                        finished ? 'Completed' : 'In progress',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          fontSize: 11,
-                          color: finished ? AppColors.gold : AppColors.sage,
-                        ),
+                        plan.emoji,
+                        style: const TextStyle(fontSize: 28),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      finished
-                          ? '${plan.durationDays} days done'
-                          : 'Day $progressDay · $completedDays completed',
-                      style: theme.textTheme.bodySmall,
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  plan.title,
+                                  style: theme.textTheme.titleMedium,
+                                ),
+                              ),
+                              if (plan.isPremium)
+                                const Icon(
+                                  Icons.auto_awesome_rounded,
+                                  size: 18,
+                                  color: AppColors.warmGold,
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${plan.durationDays} days · ${plan.category}',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: AppColors.warmGold,
+                              letterSpacing: 0.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.slate,
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 5,
-                    backgroundColor: AppColors.goldSoft.withValues(alpha: 0.35),
-                    color: AppColors.sage,
-                  ),
+                const SizedBox(height: 12),
+                Text(
+                  plan.subtitle,
+                  style: theme.textTheme.bodyMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                if (isStarted) ...[
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: finished
+                              ? AppColors.goldTint.withValues(alpha: 0.6)
+                              : AppColors.sageMist,
+                          borderRadius:
+                              BorderRadius.circular(AppRadii.pill),
+                        ),
+                        child: Text(
+                          finished ? 'Completed' : 'In progress',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontSize: 11,
+                            color: finished
+                                ? AppColors.warmGold
+                                : AppColors.sageGreen,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          finished
+                              ? '${plan.durationDays} days done'
+                              : 'Day $progressDay · $completedDays of ${plan.durationDays}',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 6,
+                      backgroundColor: AppColors.border,
+                      color: AppColors.sageGreen,
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

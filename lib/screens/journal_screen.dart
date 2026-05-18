@@ -4,6 +4,7 @@ import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
 import '../widgets/journal_note_card.dart';
 import '../widgets/screen_app_bar.dart';
+import '../widgets/soft_icon_badge.dart';
 
 const _prayerPrompts = [
   'Thank You for today\'s blessings…',
@@ -53,21 +54,45 @@ class _JournalScreenState extends State<JournalScreen> {
         builder: (context, _) {
           return Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              Container(
+                margin: const EdgeInsets.fromLTRB(16, 6, 16, 12),
+                padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(AppRadii.card),
+                  border: Border.all(color: AppColors.border),
+                  boxShadow: AppShadows.hairline,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'A quiet space for prayer',
-                      style: theme.textTheme.titleMedium,
+                    Row(
+                      children: [
+                        const SoftIconBadge(
+                          icon: Icons.edit_note_rounded,
+                          color: AppColors.sageGreen,
+                          size: 36,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'A quiet space for prayer',
+                                style: theme.textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Saved privately on this device.',
+                                style: theme.textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Saved privately on this device.',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -75,16 +100,16 @@ class _JournalScreenState extends State<JournalScreen> {
                           return Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: ActionChip(
-                              label: Text(
-                                p,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  fontSize: 12,
-                                ),
-                              ),
+                              label: Text(p),
                               onPressed: () => _applyPrompt(p),
-                              backgroundColor: AppColors.parchment,
-                              side: BorderSide(
-                                color: AppColors.goldSoft.withValues(alpha: 0.6),
+                              backgroundColor: AppColors.softCream,
+                              labelStyle: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 12,
+                                color: AppColors.deepNavy,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              side: const BorderSide(
+                                color: AppColors.border,
                               ),
                             ),
                           );
@@ -101,20 +126,25 @@ class _JournalScreenState extends State<JournalScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    FilledButton.icon(
-                      onPressed: _addEntry,
-                      icon: const Icon(Icons.bookmark_add_outlined),
-                      label: const Text('Save to journal'),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: FilledButton.icon(
+                        onPressed: _addEntry,
+                        icon: const Icon(
+                          Icons.bookmark_add_rounded,
+                          size: 18,
+                        ),
+                        label: const Text('Save to journal'),
+                      ),
                     ),
                   ],
                 ),
               ),
-              const Divider(height: 1),
               Expanded(
                 child: appState.journalEntries.isEmpty
                     ? const _EmptyJournal()
                     : ListView.separated(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                         itemCount: appState.journalEntries.length,
                         separatorBuilder: (_, __) =>
                             const SizedBox(height: 12),
@@ -157,15 +187,11 @@ class _EmptyJournal extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: AppColors.sageLight,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.edit_note_rounded,
-                  size: 36, color: AppColors.sage),
+            const SoftIconBadge(
+              icon: Icons.favorite_rounded,
+              color: AppColors.sageGreen,
+              size: 72,
+              iconSize: 32,
             ),
             const SizedBox(height: 20),
             Text(

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- VerseLight brand colors used by Android resources (splash, etc.).
+         Keep in sync with AppColors in lib/utils/theme.dart. -->
+    <color name="brand_ivory">#FAF7F0</color>
+    <color name="brand_deep_navy">#1D2636</color>
+    <color name="brand_warm_gold">#C9A45C</color>
+    <!-- Legacy alias used by launch_background.xml + styles.xml -->
+    <color name="brand_cream">#FAF7F0</color>
+</resources>

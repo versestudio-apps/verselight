@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/routes.dart';
 
-/// Shared AppBar actions: Premium + Settings (Phase 01).
+/// Shared AppBar with friendly Premium + Settings actions.
 class ScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ScreenAppBar({
     super.key,
@@ -26,13 +26,16 @@ class ScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (showPremium)
           IconButton(
             tooltip: 'Premium',
-            icon: const Icon(Icons.workspace_premium_outlined),
+            // auto_awesome reads as a gentle sparkle — friendlier than
+            // the heraldic workspace_premium icon.
+            icon: const Icon(Icons.auto_awesome_outlined),
             onPressed: () => AppRoutes.openPaywall(context),
           ),
         if (showSettings)
           IconButton(
             tooltip: 'Settings',
-            icon: const Icon(Icons.settings_outlined),
+            // tune (sliders) feels lighter than the cog wheel.
+            icon: const Icon(Icons.tune_rounded),
             onPressed: () => AppRoutes.openSettings(context),
           ),
       ],

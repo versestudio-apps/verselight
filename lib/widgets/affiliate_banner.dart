@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/affiliate_service.dart';
 import '../utils/theme.dart';
+import 'soft_icon_badge.dart';
 
 enum BannerType { amazonBook, audible }
 
@@ -25,58 +26,65 @@ class AffiliateBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final accent = type == BannerType.audible
-        ? const Color(0xFF00A8E1)
-        : AppColors.gold;
+        ? AppColors.deepIndigo
+        : AppColors.warmGold;
+    final icon = type == BannerType.audible
+        ? Icons.headphones_rounded
+        : Icons.menu_book_rounded;
 
-    return Card(
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
         onTap: _onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  type == BannerType.audible
-                      ? Icons.headphones_rounded
-                      : Icons.menu_book_rounded,
-                  color: accent,
-                  size: 26,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (category != null) ...[
-                      Text(
-                        category!.toUpperCase(),
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          fontSize: 10,
-                          letterSpacing: 1,
-                          color: accent,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadii.card),
+            border: Border.all(color: AppColors.border),
+            boxShadow: AppShadows.hairline,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SoftIconBadge(icon: icon, color: accent, size: 52),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (category != null) ...[
+                        Text(
+                          category!.toUpperCase(),
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontSize: 10,
+                            letterSpacing: 1.1,
+                            color: accent,
+                          ),
                         ),
+                        const SizedBox(height: 4),
+                      ],
+                      Text(title, style: theme.textTheme.titleMedium),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.bodySmall,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
                     ],
-                    Text(title, style: theme.textTheme.titleMedium),
-                    const SizedBox(height: 4),
-                    Text(subtitle, style: theme.textTheme.bodySmall),
-                  ],
+                  ),
                 ),
-              ),
-              Icon(Icons.north_east_rounded,
-                  size: 18, color: AppColors.warmBrownMuted),
-            ],
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.north_east_rounded,
+                  size: 18,
+                  color: AppColors.slate,
+                ),
+              ],
+            ),
           ),
         ),
       ),

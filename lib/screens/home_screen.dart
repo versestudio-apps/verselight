@@ -5,8 +5,10 @@ import '../models/devotional.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
 import '../widgets/affiliate_banner.dart';
+import '../widgets/app_section_header.dart';
 import '../widgets/app_state_scope.dart';
 import '../widgets/daily_verse_card.dart';
+import '../widgets/soft_icon_badge.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -26,12 +28,12 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             tooltip: 'Premium',
-            icon: const Icon(Icons.workspace_premium_outlined),
+            icon: const Icon(Icons.auto_awesome_outlined),
             onPressed: () => AppRoutes.openPaywall(context),
           ),
           IconButton(
             tooltip: 'Settings',
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(Icons.tune_rounded),
             onPressed: () => AppRoutes.openSettings(context),
           ),
         ],
@@ -40,7 +42,7 @@ class HomeScreen extends StatelessWidget {
         listenable: appState,
         builder: (context, _) {
           return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
             children: [
               Text(
                 _greeting(),
@@ -53,14 +55,10 @@ class HomeScreen extends StatelessWidget {
                   letterSpacing: 0.2,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
               _StreakCard(streakDays: appState.streakDays),
-              const SizedBox(height: 22),
-              Text(
-                "Today's devotional",
-                style: theme.textTheme.titleLarge,
-              ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 26),
+              const AppSectionHeader(title: "Today's devotional"),
               DailyVerseCard(
                 title: today.title,
                 verseText: today.verseText,
@@ -74,23 +72,24 @@ class HomeScreen extends StatelessWidget {
                   AppRoutes.openDevotionalDetail(context, today.id);
                 },
               ),
-              const SizedBox(height: 22),
-              Text('Quick access', style: theme.textTheme.titleMedium),
-              const SizedBox(height: 10),
+              const SizedBox(height: 26),
+              const AppSectionHeader(title: 'Quick access'),
               Row(
                 children: [
                   Expanded(
                     child: _QuickAction(
                       icon: Icons.menu_book_rounded,
+                      color: AppColors.warmGold,
                       label: 'Devotional',
                       subtitle: 'Daily readings',
                       onTap: () => appState.selectTab(1),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: _QuickAction(
-                      icon: Icons.edit_note_rounded,
+                      icon: Icons.favorite_rounded,
+                      color: AppColors.sageGreen,
                       label: 'Journal',
                       subtitle: 'Prayer notes',
                       onTap: () => appState.selectTab(2),
@@ -98,21 +97,23 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: _QuickAction(
-                      icon: Icons.calendar_today_rounded,
+                      icon: Icons.route_rounded,
+                      color: AppColors.deepIndigo,
                       label: 'Plans',
                       subtitle: 'Bible journeys',
                       onTap: () => appState.selectTab(3),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: _QuickAction(
                       icon: Icons.headphones_rounded,
+                      color: AppColors.softRose,
                       label: 'Audio',
                       subtitle: 'Listen & reflect',
                       onTap: () => appState.selectTab(4),
@@ -120,17 +121,17 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 28),
-              Text(
-                'Curated for you',
-                style: theme.textTheme.titleLarge,
+              const SizedBox(height: 30),
+              if (!appState.isPremium) ...[
+                _GentlePremiumCta(
+                  onTap: () => AppRoutes.openPaywall(context),
+                ),
+                const SizedBox(height: 26),
+              ],
+              const AppSectionHeader(
+                title: 'Curated for you',
+                subtitle: 'Hand-picked resources to deepen your walk',
               ),
-              const SizedBox(height: 4),
-              Text(
-                'Hand-picked resources to deepen your walk',
-                style: theme.textTheme.bodySmall,
-              ),
-              const SizedBox(height: 12),
               const AffiliateBanner(
                 type: BannerType.amazonBook,
                 asin: 'B07BDCNF2J',
@@ -179,29 +180,42 @@ class _StreakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.fromLTRB(16, 14, 18, 14),
       decoration: BoxDecoration(
-        color: AppColors.parchment.withValues(alpha: 0.65),
-        borderRadius: BorderRadius.circular(14),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.softCream, AppColors.ivory],
+        ),
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
-          const Text('🔥', style: TextStyle(fontSize: 28)),
-          const SizedBox(width: 12),
+          const SoftIconBadge(
+            icon: Icons.local_fire_department_rounded,
+            color: AppColors.softRose,
+            size: 44,
+          ),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$streakDays-day streak',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.gold,
-                      ),
+                  streakDays == 1
+                      ? '1-day streak'
+                      : '$streakDays-day streak',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: AppColors.deepNavy,
+                  ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   'A quiet moment with God counts.',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: theme.textTheme.bodySmall,
                 ),
               ],
             ),
@@ -215,41 +229,109 @@ class _StreakCard extends StatelessWidget {
 class _QuickAction extends StatelessWidget {
   const _QuickAction({
     required this.icon,
+    required this.color,
     required this.label,
     required this.subtitle,
     required this.onTap,
   });
 
   final IconData icon;
+  final Color color;
   final String label;
   final String subtitle;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(14),
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: AppColors.goldSoft.withValues(alpha: 0.45),
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadii.card),
+            border: Border.all(color: AppColors.border),
+            boxShadow: AppShadows.hairline,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SoftIconBadge(icon: icon, color: color, size: 40),
+                const SizedBox(height: 12),
+                Text(label, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 2),
+                Text(subtitle, style: theme.textTheme.bodySmall),
+              ],
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icon, color: AppColors.sage, size: 24),
-              const SizedBox(height: 8),
-              Text(label, style: Theme.of(context).textTheme.labelLarge),
-              const SizedBox(height: 2),
-              Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-            ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GentlePremiumCta extends StatelessWidget {
+  const _GentlePremiumCta({required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppRadii.card),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFFFFF6E1),
+                Color(0xFFFAF7F0),
+              ],
+            ),
+            border: Border.all(color: AppColors.goldTint),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Row(
+              children: [
+                const SoftIconBadge(
+                  icon: Icons.auto_awesome_rounded,
+                  color: AppColors.warmGold,
+                  size: 48,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Go deeper with Premium',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Full devotionals, plans & audio — gently unlock when ready.',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.warmGold,
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -8,6 +8,7 @@ import '../widgets/affiliate_banner.dart';
 import '../widgets/app_state_scope.dart';
 import '../widgets/premium_gate.dart';
 import '../widgets/screen_app_bar.dart';
+import '../widgets/soft_icon_badge.dart';
 import '../widgets/verse_card.dart';
 
 class DevotionalScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
+    final theme = Theme.of(context);
     final filtered = filterDevotionals(sampleDevotionals, _filter);
 
     return Scaffold(
@@ -34,16 +36,16 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 6, 20, 0),
                   child: Text(
                     'Short readings with reflection, prayer, and a simple action step.',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: theme.textTheme.bodyMedium,
                   ),
                 ),
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -55,13 +57,21 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                             label: Text(cat),
                             selected: selected,
                             onSelected: (_) => setState(() => _filter = cat),
+                            backgroundColor: AppColors.surface,
                             selectedColor:
-                                AppColors.goldSoft.withValues(alpha: 0.55),
-                            checkmarkColor: AppColors.gold,
+                                AppColors.goldTint.withValues(alpha: 0.55),
+                            checkmarkColor: AppColors.warmGold,
                             side: BorderSide(
                               color: selected
-                                  ? AppColors.gold
-                                  : AppColors.goldSoft,
+                                  ? AppColors.warmGold
+                                  : AppColors.border,
+                            ),
+                            labelStyle: theme.textTheme.labelLarge?.copyWith(
+                              color: selected
+                                  ? AppColors.warmGold
+                                  : AppColors.deepNavy,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
                             ),
                           ),
                         );
@@ -75,18 +85,35 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                   hasScrollBody: false,
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        'No devotionals in this category yet.',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        textAlign: TextAlign.center,
+                      padding: const EdgeInsets.all(28),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SoftIconBadge(
+                            icon: Icons.menu_book_rounded,
+                            color: AppColors.warmGold,
+                            size: 64,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No devotionals here yet',
+                            style: theme.textTheme.titleLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Try another category — more readings are added in each update.',
+                            style: theme.textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 )
               else
                 SliverPadding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
                   sliver: SliverList.separated(
                     itemCount: filtered.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -112,7 +139,7 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                 ),
               const SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 24),
                   child: AffiliateBanner(
                     type: BannerType.audible,
                     category: 'Listen',

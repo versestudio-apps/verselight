@@ -7,6 +7,7 @@ import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
 import '../widgets/premium_gate.dart';
 import '../widgets/screen_app_bar.dart';
+import '../widgets/soft_icon_badge.dart';
 
 class AudioScreen extends StatelessWidget {
   const AudioScreen({super.key});
@@ -14,6 +15,7 @@ class AudioScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: const ScreenAppBar(title: 'Audio', showSettings: false),
@@ -26,15 +28,27 @@ class AudioScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Text(
-                  'Scripture and devotionals for your commute or quiet time.',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                padding: const EdgeInsets.fromLTRB(20, 6, 20, 8),
+                child: Row(
+                  children: [
+                    const SoftIconBadge(
+                      icon: Icons.spa_rounded,
+                      color: AppColors.softRose,
+                      size: 36,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Scripture and devotionals for your commute or quiet time.',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
                 child: ListView.separated(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
                   itemCount: sampleAudioTracks.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
@@ -95,56 +109,87 @@ class _AudioTrackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
         onTap: onPlay,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: isPlaying
-                      ? AppColors.goldSoft
-                      : AppColors.sageLight,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  isPlaying
-                      ? Icons.pause_rounded
-                      : (track.isPremium
-                          ? Icons.lock_rounded
-                          : Icons.play_arrow_rounded),
-                  color: isPlaying ? AppColors.gold : AppColors.sage,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(track.title, style: theme.textTheme.titleMedium),
-                    const SizedBox(height: 2),
-                    Text(
-                      track.subtitle,
-                      style: theme.textTheme.bodySmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadii.card),
+            border: Border.all(
+              color: isPlaying
+                  ? AppColors.warmGold.withValues(alpha: 0.55)
+                  : AppColors.border,
+            ),
+            boxShadow: AppShadows.hairline,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isPlaying
+                          ? [
+                              AppColors.goldTint
+                                  .withValues(alpha: 0.85),
+                              AppColors.softCream,
+                            ]
+                          : [
+                              AppColors.softCream,
+                              AppColors.ivory,
+                            ],
                     ),
-                  ],
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    isPlaying
+                        ? Icons.pause_rounded
+                        : (track.isPremium
+                            ? Icons.auto_awesome_rounded
+                            : Icons.play_arrow_rounded),
+                    color: isPlaying
+                        ? AppColors.warmGold
+                        : (track.isPremium
+                            ? AppColors.warmGold
+                            : AppColors.sageGreen),
+                    size: 26,
+                  ),
                 ),
-              ),
-              Text(
-                track.durationLabel,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.warmBrownMuted,
-                  fontWeight: FontWeight.w500,
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(track.title, style: theme.textTheme.titleMedium),
+                      const SizedBox(height: 2),
+                      Text(
+                        track.subtitle,
+                        style: theme.textTheme.bodySmall,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                Text(
+                  track.durationLabel,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.slate,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -166,30 +211,25 @@ class _NowPlayingBar extends StatelessWidget {
         color: AppColors.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.warmBrown.withValues(alpha: 0.08),
-            blurRadius: 12,
+            color: AppColors.deepNavy.withValues(alpha: 0.08),
+            blurRadius: 16,
             offset: const Offset(0, -4),
           ),
         ],
-        border: Border(
-          top: BorderSide(color: AppColors.goldSoft.withValues(alpha: 0.6)),
+        border: const Border(
+          top: BorderSide(color: AppColors.border),
         ),
       ),
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+          padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
           child: Row(
             children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.goldSoft.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.graphic_eq_rounded,
-                    color: AppColors.gold),
+              const SoftIconBadge(
+                icon: Icons.graphic_eq_rounded,
+                color: AppColors.warmGold,
+                size: 44,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -199,12 +239,13 @@ class _NowPlayingBar extends StatelessWidget {
                   children: [
                     Text(
                       'NOW PLAYING',
-                      style: theme.textTheme.labelLarge?.copyWith(
+                      style: theme.textTheme.labelMedium?.copyWith(
                         fontSize: 10,
-                        letterSpacing: 1,
-                        color: AppColors.gold,
+                        letterSpacing: 1.2,
+                        color: AppColors.warmGold,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
                       track.title,
                       style: theme.textTheme.titleMedium,
@@ -215,8 +256,10 @@ class _NowPlayingBar extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close_rounded),
+                icon: const Icon(Icons.stop_circle_outlined),
+                color: AppColors.slate,
                 onPressed: () => appState.setPlayingAudio(null),
+                tooltip: 'Stop',
               ),
             ],
           ),

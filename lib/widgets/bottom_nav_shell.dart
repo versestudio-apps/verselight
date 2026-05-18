@@ -32,13 +32,15 @@ class BottomNavShell extends StatelessWidget {
       label: 'Devotional',
     ),
     NavigationDestination(
-      icon: Icon(Icons.edit_note_outlined),
-      selectedIcon: Icon(Icons.edit_note_rounded),
+      // Heart = prayer / personal journal — warmer than edit_note.
+      icon: Icon(Icons.favorite_outline_rounded),
+      selectedIcon: Icon(Icons.favorite_rounded),
       label: 'Journal',
     ),
     NavigationDestination(
-      icon: Icon(Icons.calendar_today_outlined),
-      selectedIcon: Icon(Icons.calendar_today_rounded),
+      // Route = a journey through Scripture — friendlier than a calendar.
+      icon: Icon(Icons.route_outlined),
+      selectedIcon: Icon(Icons.route_rounded),
       label: 'Plans',
     ),
     NavigationDestination(
@@ -47,8 +49,9 @@ class BottomNavShell extends StatelessWidget {
       label: 'Audio',
     ),
     NavigationDestination(
-      icon: Icon(Icons.shopping_bag_outlined),
-      selectedIcon: Icon(Icons.shopping_bag_rounded),
+      // Storefront = curated resources, less "sales-y" than shopping_bag.
+      icon: Icon(Icons.storefront_outlined),
+      selectedIcon: Icon(Icons.storefront_rounded),
       label: 'Shop',
     ),
   ];

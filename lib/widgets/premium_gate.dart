@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
 import 'app_state_scope.dart';
+import 'soft_icon_badge.dart';
 
 /// Wraps premium-only UI; taps open the paywall when not subscribed.
 class PremiumGate extends StatelessWidget {
@@ -27,7 +28,7 @@ class PremiumGate extends StatelessWidget {
         return Stack(
           children: [
             if (blurWhenLocked)
-              Opacity(opacity: 0.45, child: IgnorePointer(child: child))
+              Opacity(opacity: 0.5, child: IgnorePointer(child: child))
             else
               child,
             Positioned.fill(
@@ -35,37 +36,34 @@ class PremiumGate extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => AppRoutes.openPaywall(context),
+                  borderRadius: BorderRadius.circular(AppRadii.card),
                   child: Center(
                     child: Container(
-                      margin: const EdgeInsets.all(24),
+                      margin: const EdgeInsets.all(20),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
+                        horizontal: 22,
+                        vertical: 18,
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.goldSoft),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.06),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        borderRadius:
+                            BorderRadius.circular(AppRadii.card),
+                        border: Border.all(color: AppColors.border),
+                        boxShadow: AppShadows.soft,
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
-                            Icons.workspace_premium_rounded,
-                            color: AppColors.premium,
-                            size: 36,
+                          const SoftIconBadge(
+                            icon: Icons.auto_awesome_rounded,
+                            color: AppColors.warmGold,
+                            size: 44,
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 12),
                           Text(
                             'Premium feature',
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style:
+                                Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: 4),
                           Text(

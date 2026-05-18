@@ -19,7 +19,13 @@ class JournalNoteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.hairline,
+      ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(18, 14, 8, 16),
         child: Column(
@@ -27,29 +33,42 @@ class JournalNoteCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.favorite_border_rounded,
-                    size: 16, color: AppColors.sage),
-                const SizedBox(width: 6),
+                Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    color: AppColors.sageMist,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.favorite_rounded,
+                    size: 14,
+                    color: AppColors.sageGreen,
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     timeLabel,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.warmBrownMuted,
-                      fontWeight: FontWeight.w500,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: AppColors.slate,
+                      fontSize: 11.5,
+                      letterSpacing: 0.3,
                     ),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete_outline_rounded, size: 20),
                   onPressed: onDelete,
-                  tooltip: 'Delete',
-                  color: AppColors.warmBrownMuted,
+                  tooltip: 'Delete entry',
+                  color: AppColors.slate,
                 ),
               ],
             ),
+            const SizedBox(height: 4),
             Text(
               entry.text,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.55),
+              style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
             ),
           ],
         ),

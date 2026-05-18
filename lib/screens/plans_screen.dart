@@ -12,6 +12,7 @@ class PlansScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: const ScreenAppBar(title: 'Reading Plans', showSettings: false),
@@ -19,14 +20,17 @@ class PlansScreen extends StatelessWidget {
         listenable: appState,
         builder: (context, _) {
           return ListView.separated(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 28),
             itemCount: samplePlans.length + 1,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, __) => const SizedBox(height: 14),
             itemBuilder: (context, index) {
               if (index == 0) {
-                return Text(
-                  'Structured journeys through Scripture—at your pace.',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text(
+                    'Structured journeys through Scripture — at your pace.',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 );
               }
               final plan = samplePlans[index - 1];

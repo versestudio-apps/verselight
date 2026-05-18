@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 
 import '../utils/theme.dart';
+import 'soft_icon_badge.dart';
 
 /// Titled reading block for devotional / plan detail screens.
+///
+/// Visually a soft card with an icon badge, eyebrow label, and body text.
 class ContentSection extends StatelessWidget {
   const ContentSection({
     super.key,
     required this.icon,
     required this.title,
     required this.body,
-    this.accent = AppColors.parchment,
-    this.iconColor = AppColors.gold,
+    this.accent = AppColors.warmGold,
+    this.background = AppColors.softCream,
   });
 
   final IconData icon;
   final String title;
   final String body;
   final Color accent;
-  final Color iconColor;
+  final Color background;
 
   @override
   Widget build(BuildContext context) {
@@ -25,31 +28,34 @@ class ContentSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
       decoration: BoxDecoration(
-        color: accent,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.goldSoft.withValues(alpha: 0.5)),
+        color: background,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: iconColor),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: iconColor == AppColors.gold
-                      ? AppColors.gold
-                      : AppColors.sage,
+              SoftIconBadge(icon: icon, color: accent, size: 36),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: accent,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Text(body, style: theme.textTheme.bodyLarge),
+          const SizedBox(height: 12),
+          Text(
+            body,
+            style: theme.textTheme.bodyLarge?.copyWith(height: 1.6),
+          ),
         ],
       ),
     );

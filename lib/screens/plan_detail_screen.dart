@@ -30,84 +30,105 @@ class PlanDetailScreen extends StatelessWidget {
           final isFinished = started && currentDay > plan.durationDays;
 
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 32),
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+              Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.surface, AppColors.softCream],
+                  ),
+                  borderRadius: BorderRadius.circular(AppRadii.card),
+                  border: Border.all(color: AppColors.border),
+                  boxShadow: AppShadows.soft,
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: AppColors.goldTint
+                                .withValues(alpha: 0.45),
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            plan.emoji,
+                            style: const TextStyle(fontSize: 36),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(plan.title,
+                                  style: theme.textTheme.titleLarge),
+                              const SizedBox(height: 4),
+                              Text(
+                                plan.subtitle,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '${plan.durationDays} days · ${plan.category}',
+                                style:
+                                    theme.textTheme.labelMedium?.copyWith(
+                                  color: AppColors.warmGold,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (started) ...[
+                      const SizedBox(height: 18),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(plan.emoji, style: const TextStyle(fontSize: 44)),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(plan.title,
-                                    style: theme.textTheme.titleLarge),
-                                const SizedBox(height: 4),
-                                Text(
-                                  plan.subtitle,
-                                  style: theme.textTheme.bodyMedium,
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  '${plan.durationDays} days · ${plan.category}',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: AppColors.gold,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
+                          Text(
+                            isFinished ? 'Completed' : 'Your progress',
+                            style: theme.textTheme.labelLarge,
+                          ),
+                          Text(
+                            isFinished
+                                ? 'All ${plan.durationDays} days'
+                                : 'Day $currentDay of ${plan.durationDays}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: AppColors.sageGreen,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
-                      if (started) ...[
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              isFinished ? 'Completed' : 'Your progress',
-                              style: theme.textTheme.labelLarge,
-                            ),
-                            Text(
-                              isFinished
-                                  ? 'All ${plan.durationDays} days'
-                                  : 'Day $currentDay of ${plan.durationDays}',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: AppColors.sage,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                      const SizedBox(height: 10),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: LinearProgressIndicator(
+                          value: isFinished ? 1.0 : progress,
+                          minHeight: 8,
+                          backgroundColor: AppColors.border,
+                          color: AppColors.sageGreen,
                         ),
-                        const SizedBox(height: 8),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: isFinished ? 1.0 : progress,
-                            minHeight: 8,
-                            backgroundColor:
-                                AppColors.goldSoft.withValues(alpha: 0.35),
-                            color: AppColors.sage,
-                          ),
-                        ),
-                      ],
+                      ),
                     ],
-                  ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 26),
               Text('Daily readings', style: theme.textTheme.titleLarge),
               const SizedBox(height: 12),
               ...plan.days.map((day) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 10),
                   child: _PlanDayTile(
                     day: day,
                     isDone: appState.isPlanDayCompleted(plan.id, day.dayNumber),
@@ -117,7 +138,7 @@ class PlanDetailScreen extends StatelessWidget {
                   ),
                 );
               }),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               if (!started)
                 FilledButton.icon(
                   onPressed: () async {
@@ -143,13 +164,13 @@ class PlanDetailScreen extends StatelessWidget {
                       SnackBar(content: Text(message)),
                     );
                   },
-                  icon: const Icon(Icons.check_circle_outline),
+                  icon: const Icon(Icons.check_circle_rounded),
                   label: Text('Complete day $currentDay'),
                 )
               else
                 OutlinedButton.icon(
                   onPressed: null,
-                  icon: const Icon(Icons.celebration_outlined),
+                  icon: const Icon(Icons.celebration_rounded),
                   label: const Text('Plan completed'),
                 ),
             ],
@@ -177,67 +198,125 @@ class _PlanDayTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      color: isCurrent
-          ? AppColors.sageLight.withValues(alpha: 0.45)
-          : AppColors.surface,
-      child: ExpansionTile(
-        initiallyExpanded: isCurrent,
-        leading: CircleAvatar(
-          backgroundColor: isDone
-              ? AppColors.sage
-              : (isCurrent
-                  ? AppColors.goldSoft
-                  : AppColors.goldSoft.withValues(alpha: 0.35)),
-          child: Icon(
-            isDone ? Icons.check_rounded : Icons.menu_book_rounded,
-            color: isDone ? Colors.white : AppColors.gold,
-            size: 20,
-          ),
-        ),
-        title: Text(
-          'Day ${day.dayNumber}: ${day.title}',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 15,
-          ),
-        ),
-        subtitle: isCurrent && isStarted
-            ? Text(
-                'Today\'s reading',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.sage,
-                  fontWeight: FontWeight.w600,
-                ),
-              )
-            : Text(day.verseReference, style: theme.textTheme.bodySmall),
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  day.verseText,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(day.reflection, style: theme.textTheme.bodyMedium),
-                if (day.actionStep != null) ...[
-                  const SizedBox(height: 10),
-                  Text(
-                    'Action: ${day.actionStep}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.gold,
-                      fontWeight: FontWeight.w600,
+    final borderColor = isCurrent
+        ? AppColors.warmGold.withValues(alpha: 0.55)
+        : AppColors.border;
+    final cardColor =
+        isCurrent ? AppColors.softCream : AppColors.surface;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        border: Border.all(color: borderColor),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Theme(
+        data: theme.copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          initiallyExpanded: isCurrent,
+          tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+          childrenPadding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: isDone
+                  ? AppColors.sageGreen
+                  : (isCurrent
+                      ? AppColors.goldTint.withValues(alpha: 0.7)
+                      : AppColors.softCream),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            alignment: Alignment.center,
+            child: isDone
+                ? const Icon(
+                    Icons.check_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  )
+                : Text(
+                    '${day.dayNumber}',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: isCurrent
+                          ? AppColors.warmGold
+                          : AppColors.slate,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ],
-              ],
-            ),
           ),
-        ],
+          title: Text(
+            day.title,
+            style: theme.textTheme.titleMedium?.copyWith(fontSize: 15),
+          ),
+          subtitle: isCurrent && isStarted
+              ? Text(
+                  "Today's reading",
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.sageGreen,
+                    fontWeight: FontWeight.w600,
+                  ),
+                )
+              : Text(day.verseReference, style: theme.textTheme.bodySmall),
+          iconColor: AppColors.slate,
+          collapsedIconColor: AppColors.slate,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.ivory,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '"${day.verseText}"',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      height: 1.55,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(day.reflection, style: theme.textTheme.bodyMedium),
+                  if (day.actionStep != null) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.goldTint.withValues(alpha: 0.45),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.directions_walk_rounded,
+                            size: 16,
+                            color: AppColors.warmGold,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              day.actionStep!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: AppColors.deepNavy,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

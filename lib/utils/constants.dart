@@ -18,6 +18,8 @@ class AppConstants {
   static const String skuPremiumMonthly = 'verselight_premium_monthly';
   static const String skuPremiumYearly = 'verselight_premium_yearly';
 
+  // TODO(store-ready): replace placeholder URLs/email with final values before
+  // submitting to Google Play / Amazon Appstore.
   static const String privacyUrl =
       'https://versestudio-apps.github.io/privacy/';
   static const String termsUrl =

@@ -31,9 +31,16 @@ class PlanDetailScreen extends StatelessWidget {
               : 0.0;
           final isFinished = started && currentDay > plan.durationDays;
 
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(20, 6, 20, 32),
-            children: [
+          // Cap the content column at a readable 720dp so tablet layouts
+          // don't stretch the header image into an ultra-wide letterbox
+          // (the old `height: 160, width: double.infinity` slot cropped
+          // ~80% of vertical content from the 16:9 source on tablet).
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 6, 20, 32),
+                children: [
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.surface,
@@ -45,12 +52,18 @@ class PlanDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DevotionalImage(
-                      assetPath: DevotionalImages.forPlanId(plan.id),
-                      height: 160,
-                      width: double.infinity,
-                      borderRadius: BorderRadius.zero,
-                      semanticLabel: plan.title,
+                    // Image keeps a fixed 16:9 aspect so the source (also 16:9
+                    // for the landscape masters) renders pixel-aligned on
+                    // every device width. On a phone (~360dp) the image is
+                    // ~320×180; on a 720dp-capped tablet content column it's
+                    // ~680×382. No vertical crop, faces stay safe.
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: DevotionalImage(
+                        assetPath: DevotionalImages.forPlanId(plan.id),
+                        borderRadius: BorderRadius.zero,
+                        semanticLabel: plan.title,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(20),
@@ -180,7 +193,9 @@ class PlanDetailScreen extends StatelessWidget {
                   icon: const Icon(Icons.celebration_rounded),
                   label: const Text('Plan completed'),
                 ),
-            ],
+                ],
+              ),
+            ),
           );
         },
       ),

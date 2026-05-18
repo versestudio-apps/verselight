@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/iap_service.dart';
 import '../utils/constants.dart';
+import '../utils/routes.dart';
 import '../utils/theme.dart';
 
 class PaywallScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
           : AppConstants.skuPremiumMonthly;
       await IapService.instance.purchase(sku);
       if (!mounted) return;
+      AppRoutes.notifyPremiumChanged(context);
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Premium enabled (mock purchase)')),

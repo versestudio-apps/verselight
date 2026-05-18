@@ -1,92 +1,78 @@
 import 'package:flutter/material.dart';
 
+import '../data/sample_audio.dart';
+import '../models/audio_track.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
+import '../widgets/app_state_scope.dart';
 import '../widgets/premium_gate.dart';
+import '../widgets/screen_app_bar.dart';
 
 class AudioScreen extends StatelessWidget {
   const AudioScreen({super.key});
 
-  static const _tracks = [
-    _AudioItem(
-      title: 'Psalm 23 — NIV',
-      duration: '3:42',
-      isPremium: false,
-    ),
-    _AudioItem(
-      title: 'Morning Devotional — Trust',
-      duration: '8:15',
-      isPremium: false,
-    ),
-    _AudioItem(
-      title: 'Gospel of John (sample)',
-      duration: '45:00',
-      isPremium: true,
-    ),
-    _AudioItem(
-      title: 'Worship Playlist — Peace',
-      duration: '32:10',
-      isPremium: true,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Audio'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.workspace_premium_outlined),
-            onPressed: () => AppRoutes.openPaywall(context),
-          ),
-        ],
-      ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: _tracks.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
-          final track = _tracks[index];
-          final tile = _AudioTile(
-            track: track,
-            onPlay: () {
-              if (track.isPremium) {
-                AppRoutes.openPaywall(context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Playing (mock): ${track.title}')),
-                );
-              }
-            },
-          );
+    final appState = AppStateScope.of(context);
 
-          if (track.isPremium) {
-            return PremiumGate(child: tile);
-          }
-          return tile;
+    return Scaffold(
+      appBar: const ScreenAppBar(title: 'Audio', showSettings: false),
+      body: ListenableBuilder(
+        listenable: appState,
+        builder: (context, _) {
+          final playing = audioTrackById(appState.playingAudioId ?? '');
+
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: sampleAudioTracks.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final track = sampleAudioTracks[index];
+                    final tile = _AudioTile(
+                      track: track,
+                      isPlaying: appState.playingAudioId == track.id,
+                      onPlay: () => _onPlay(context, track),
+                    );
+                    if (track.isPremium) {
+                      return PremiumGate(child: tile);
+                    }
+                    return tile;
+                  },
+                ),
+              ),
+              if (playing != null) _NowPlayingBar(track: playing),
+            ],
+          );
         },
       ),
     );
   }
-}
 
-class _AudioItem {
-  const _AudioItem({
-    required this.title,
-    required this.duration,
-    required this.isPremium,
-  });
-
-  final String title;
-  final String duration;
-  final bool isPremium;
+  void _onPlay(BuildContext context, AudioTrack track) {
+    final appState = AppStateScope.of(context);
+    if (track.isPremium && !appState.isPremium) {
+      AppRoutes.openPaywall(context);
+      return;
+    }
+    appState.setPlayingAudio(track.id);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Playing (mock): ${track.title}')),
+    );
+  }
 }
 
 class _AudioTile extends StatelessWidget {
-  const _AudioTile({required this.track, required this.onPlay});
+  const _AudioTile({
+    required this.track,
+    required this.isPlaying,
+    required this.onPlay,
+  });
 
-  final _AudioItem track;
+  final AudioTrack track;
+  final bool isPlaying;
   final VoidCallback onPlay;
 
   @override
@@ -94,19 +80,77 @@ class _AudioTile extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.sageLight,
+          backgroundColor: isPlaying
+              ? AppColors.goldSoft
+              : AppColors.sageLight,
           child: Icon(
-            track.isPremium ? Icons.lock_rounded : Icons.play_arrow_rounded,
-            color: AppColors.sage,
+            isPlaying
+                ? Icons.pause_rounded
+                : (track.isPremium
+                    ? Icons.lock_rounded
+                    : Icons.play_arrow_rounded),
+            color: isPlaying ? AppColors.gold : AppColors.sage,
           ),
         ),
         title: Text(track.title),
-        subtitle: Text(track.duration),
+        subtitle: Text('${track.durationLabel} · ${track.subtitle}'),
         trailing: IconButton(
-          icon: const Icon(Icons.headphones_rounded),
+          icon: Icon(
+            isPlaying ? Icons.pause_circle_outline : Icons.play_circle_outline,
+            color: AppColors.gold,
+          ),
           onPressed: onPlay,
         ),
         onTap: onPlay,
+      ),
+    );
+  }
+}
+
+class _NowPlayingBar extends StatelessWidget {
+  const _NowPlayingBar({required this.track});
+  final AudioTrack track;
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = AppStateScope.of(context);
+
+    return Material(
+      elevation: 8,
+      color: AppColors.parchment,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.graphic_eq_rounded, color: AppColors.gold),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Now playing (mock)',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    Text(
+                      track.title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => appState.setPlayingAudio(null),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

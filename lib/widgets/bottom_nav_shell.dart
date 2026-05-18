@@ -6,16 +6,10 @@ import '../screens/home_screen.dart';
 import '../screens/journal_screen.dart';
 import '../screens/plans_screen.dart';
 import '../screens/shop_screen.dart';
+import 'app_state_scope.dart';
 
-class BottomNavShell extends StatefulWidget {
+class BottomNavShell extends StatelessWidget {
   const BottomNavShell({super.key});
-
-  @override
-  State<BottomNavShell> createState() => _BottomNavShellState();
-}
-
-class _BottomNavShellState extends State<BottomNavShell> {
-  int _index = 0;
 
   static const _screens = [
     HomeScreen(),
@@ -61,16 +55,24 @@ class _BottomNavShellState extends State<BottomNavShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _index,
-        children: _screens,
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: _destinations,
-      ),
+    final appState = AppStateScope.of(context);
+
+    return ListenableBuilder(
+      listenable: appState,
+      builder: (context, _) {
+        return Scaffold(
+          body: IndexedStack(
+            index: appState.tabIndex,
+            children: _screens,
+          ),
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: appState.tabIndex,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            onDestinationSelected: appState.selectTab,
+            destinations: _destinations,
+          ),
+        );
+      },
     );
   }
 }

@@ -4,6 +4,7 @@ import '../data/sample_devotionals.dart';
 import '../utils/routes.dart';
 import '../widgets/affiliate_banner.dart';
 import '../widgets/premium_gate.dart';
+import '../widgets/screen_app_bar.dart';
 import '../widgets/verse_card.dart';
 
 class DevotionalScreen extends StatelessWidget {
@@ -12,15 +13,7 @@ class DevotionalScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Devotional'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.workspace_premium_outlined),
-            onPressed: () => AppRoutes.openPaywall(context),
-          ),
-        ],
-      ),
+      appBar: const ScreenAppBar(title: 'Devotional', showSettings: false),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: sampleDevotionals.length + 1,
@@ -41,16 +34,11 @@ class DevotionalScreen extends StatelessWidget {
             verseRef: devo.verseRef,
             bodyPreview: devo.bodyPreview,
             isPremium: devo.isPremium,
-            onTap: devo.isPremium
-                ? () => AppRoutes.openPaywall(context)
-                : null,
+            onTap: () => AppRoutes.openDevotionalDetail(context, devo.id),
           );
 
           if (devo.isPremium) {
-            return PremiumGate(
-              blurWhenLocked: true,
-              child: card,
-            );
+            return PremiumGate(child: card);
           }
           return card;
         },

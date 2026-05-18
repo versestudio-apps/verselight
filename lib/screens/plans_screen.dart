@@ -4,31 +4,25 @@ import '../data/sample_plans.dart';
 import '../models/reading_plan.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
+import '../widgets/screen_app_bar.dart';
+
 class PlansScreen extends StatelessWidget {
   const PlansScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Reading Plans')),
+      appBar: const ScreenAppBar(title: 'Reading Plans', showSettings: false),
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: samplePlans.length,
         separatorBuilder: (_, __) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           final plan = samplePlans[index];
-          final tile = _PlanTile(
+          return _PlanTile(
             plan: plan,
-            onTap: plan.isPremium
-                ? () => AppRoutes.openPaywall(context)
-                : () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Starting: ${plan.title}')),
-                    );
-                  },
+            onTap: () => AppRoutes.openPlanDetail(context, plan.id),
           );
-
-          return tile;
         },
       ),
     );

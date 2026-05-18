@@ -5,6 +5,8 @@ class Devotional {
     required this.verseText,
     required this.verseRef,
     required this.bodyPreview,
+    required this.bodyFull,
+    required this.reflectionPrompt,
     this.isPremium = false,
   });
 
@@ -13,5 +15,7 @@ class Devotional {
   final String verseText;
   final String verseRef;
   final String bodyPreview;
+  final String bodyFull;
+  final String reflectionPrompt;
   final bool isPremium;
 }

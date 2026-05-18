@@ -1,41 +1,42 @@
 import 'package:flutter/material.dart';
 
-import '../services/iap_service.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
+import 'app_state_scope.dart';
 
 /// Wraps premium-only UI; taps open the paywall when not subscribed.
 class PremiumGate extends StatelessWidget {
   const PremiumGate({
     super.key,
     required this.child,
-    this.lockedChild,
     this.blurWhenLocked = true,
   });
 
   final Widget child;
-  final Widget? lockedChild;
   final bool blurWhenLocked;
 
   @override
   Widget build(BuildContext context) {
-    final isPremium = IapService.instance.isPremium;
-    if (isPremium) return child;
+    final appState = AppStateScope.of(context);
 
-    return Stack(
-      children: [
-        if (blurWhenLocked)
-          Opacity(opacity: 0.45, child: IgnorePointer(child: child))
-        else
-          child,
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => AppRoutes.openPaywall(context),
-              child: Center(
-                child: lockedChild ??
-                    Container(
+    return ListenableBuilder(
+      listenable: appState,
+      builder: (context, _) {
+        if (appState.isPremium) return child;
+
+        return Stack(
+          children: [
+            if (blurWhenLocked)
+              Opacity(opacity: 0.45, child: IgnorePointer(child: child))
+            else
+              child,
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => AppRoutes.openPaywall(context),
+                  child: Center(
+                    child: Container(
                       margin: const EdgeInsets.all(24),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -68,18 +69,20 @@ class PremiumGate extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Tap to see VerseLight Premium',
+                            'Tap to unlock with VerseLight Premium',
                             style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.center,
                           ),
                         ],
                       ),
                     ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

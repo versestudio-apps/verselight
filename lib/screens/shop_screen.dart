@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../services/affiliate_service.dart';
 import '../utils/constants.dart';
-import '../utils/theme.dart';
 import '../widgets/affiliate_banner.dart';
+import '../widgets/screen_app_bar.dart';
 
 class ShopScreen extends StatelessWidget {
   const ShopScreen({super.key});
@@ -11,7 +11,7 @@ class ShopScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Shop')),
+      appBar: const ScreenAppBar(title: 'Shop', showSettings: false),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -47,16 +47,9 @@ class ShopScreen extends StatelessWidget {
             subtitle: 'Bible & Christian audiobooks',
           ),
           const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.parchment,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              'Affiliate tracking ID (placeholder): ${AppConstants.amazonTrackingId}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+          Text(
+            'Tracking: ${AppConstants.amazonTrackingId}',
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
       ),

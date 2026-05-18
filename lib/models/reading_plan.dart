@@ -5,6 +5,7 @@ class ReadingPlan {
     required this.emoji,
     required this.durationDays,
     required this.description,
+    required this.dayReadings,
     this.isPremium = false,
   });
 
@@ -13,5 +14,6 @@ class ReadingPlan {
   final String emoji;
   final int durationDays;
   final String description;
+  final List<String> dayReadings;
   final bool isPremium;
 }

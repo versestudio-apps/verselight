@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "639966532236",
+    "project_id": "verselight-app",
+    "storage_bucket": "verselight-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639966532236:android:e4f08b18f0cb2becb361a9",
+        "android_client_info": {
+          "package_name": "com.versestudio.verselight"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJc-GNBXBowKidLztLyLDXHrrBArNungk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

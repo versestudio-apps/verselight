@@ -39,7 +39,7 @@ If a screen calls for a "Catholic shepherd" figure, use **generic,
 symbolic shepherd artwork only** — a watercolor of a shepherd in robes,
 back turned or face indistinct, holding a crook or lifting a lamb. Never
 depict a specific, recognizable living Pope or identifiable real person.
-File name: `catholic_shepherd.png`.
+File name: `catholic_shepherd.webp`.
 
 ## Palette
 

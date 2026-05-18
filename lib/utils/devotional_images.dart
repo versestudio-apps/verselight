@@ -1,8 +1,9 @@
 /// Central registry of AI-generated devotional artwork paths.
 ///
-/// All artwork lives in `assets/images/devotional/`. The PNG files are
-/// expected to ship later — until they do, `DevotionalImage` will render a
-/// soft gradient fallback so the app keeps building and running.
+/// All artwork lives in `assets/images/devotional/` as WebP (q85, encoded
+/// from 16:9 / 3:4 masters via Phase 08E-2). If a file is missing,
+/// `DevotionalImage` renders a soft gradient fallback so the app keeps
+/// building and running.
 ///
 /// Style brief: Bright Catholic Devotional Watercolor —
 /// warm ivory, Marian blue, soft gold, sage green, soft golden morning
@@ -25,33 +26,33 @@ class DevotionalImages {
   // Pick the variant that matches the slot's aspect ratio. See
   // `docs/image-asset-brief.md` for the per-asset brief.
 
-  static const String jesusWelcomeHome = '${_base}jesus_welcome_home.png';
-  static const String jesusWithChild = '${_base}jesus_with_child.png';
-  static const String marySerene = '${_base}mary_serene.png';
-  static const String bibleRosaryCandle = '${_base}bible_rosary_candle.png';
-  static const String journalPrayer = '${_base}journal_prayer.png';
-  static const String familyPrayer = '${_base}family_prayer.png';
+  static const String jesusWelcomeHome = '${_base}jesus_welcome_home.webp';
+  static const String jesusWithChild = '${_base}jesus_with_child.webp';
+  static const String marySerene = '${_base}mary_serene.webp';
+  static const String bibleRosaryCandle = '${_base}bible_rosary_candle.webp';
+  static const String journalPrayer = '${_base}journal_prayer.webp';
+  static const String familyPrayer = '${_base}family_prayer.webp';
   static const String guardianAngelChild =
-      '${_base}guardian_angel_child.png';
+      '${_base}guardian_angel_child.webp';
 
   // Portrait masters (3:4). Use for thumbnail / audio / square slots.
-  static const String catholicShepherd = '${_base}catholic_shepherd.png';
-  static const String josephFamily = '${_base}joseph_family.png';
-  static const String saintFrancis = '${_base}saint_francis.png';
-  static const String saintTherese = '${_base}saint_therese.png';
-  static const String saintMichael = '${_base}saint_michael.png';
+  static const String catholicShepherd = '${_base}catholic_shepherd.webp';
+  static const String josephFamily = '${_base}joseph_family.webp';
+  static const String saintFrancis = '${_base}saint_francis.webp';
+  static const String saintTherese = '${_base}saint_therese.webp';
+  static const String saintMichael = '${_base}saint_michael.webp';
 
   // Landscape masters (16:9). Use for hero / detail / plan-header slots.
   static const String catholicShepherdLandscape =
-      '${_base}catholic_shepherd_landscape.png';
+      '${_base}catholic_shepherd_landscape.webp';
   static const String josephFamilyLandscape =
-      '${_base}joseph_family_landscape.png';
+      '${_base}joseph_family_landscape.webp';
   static const String saintFrancisLandscape =
-      '${_base}saint_francis_landscape.png';
+      '${_base}saint_francis_landscape.webp';
   static const String saintThereseLandscape =
-      '${_base}saint_therese_landscape.png';
+      '${_base}saint_therese_landscape.webp';
   static const String saintMichaelLandscape =
-      '${_base}saint_michael_landscape.png';
+      '${_base}saint_michael_landscape.webp';
 
   /// Every known asset path — used by manifest scripts / docs.
   static const List<String> all = [

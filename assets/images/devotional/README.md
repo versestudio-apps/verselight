@@ -17,28 +17,43 @@ full brief.
   living Pope or other identifiable person.
 
 The Flutter app references these paths through `DevotionalImages` (see
-`lib/utils/devotional_images.dart`). If a PNG is missing the UI falls back to
-a gradient placeholder via `DevotionalImage`, so the app keeps building and
-running even before the artwork ships.
+`lib/utils/devotional_images.dart`). If a file is missing the UI falls back
+to a gradient placeholder via `DevotionalImage`, so the app keeps building
+and running even before the artwork ships.
+
+## Format
+
+Assets are stored as **WebP q85** (Phase 08E-2) — encoded from the original
+PNG masters via ImageMagick:
+
+```
+magick INPUT.png -quality 85 -define webp:method=6 OUTPUT.webp
+```
+
+This is ~90% smaller than the equivalent PNG with no visible quality loss
+on the watercolor source. To regenerate, work from the original masters
+(kept outside the repo) and re-encode with the command above. Replace
+`.webp` files in this folder; no Dart code change is needed because all
+path constants in `DevotionalImages` already point at `.webp`.
 
 ## Expected files
 
 | File | Used on |
 |---|---|
-| `jesus_welcome_home.png` | Home hero · Morning / Faith devotionals · Life-of-Jesus plan · Morning audio |
-| `jesus_with_child.png` | Hope devotionals · NT-Week plan · Premium audio |
-| `mary_serene.png` | Anxiety devotionals · Psalms plan · Worship audio |
-| `joseph_family.png` (portrait 3:4) | Thumbnail / square slots for family scenes |
-| `saint_francis.png` (portrait 3:4) | Thumbnail / square slots for nature devotionals |
-| `saint_therese.png` (portrait 3:4) | Thumbnail / square slots for Saints devotionals |
-| `catholic_shepherd.png` (portrait 3:4) | Psalm 23 audio artwork (56×56). Generic shepherd — never a specific living person |
-| `saint_michael.png` (portrait 3:4) | Thumbnail / square slots for Courage devotionals |
-| `joseph_family_landscape.png` (16:9) | Family devotional detail hero · alt Home hero · family plan header |
-| `saint_francis_landscape.png` (16:9) | Nature devotional detail hero |
-| `saint_therese_landscape.png` (16:9) | Saints devotional detail hero · Paywall alternate |
-| `catholic_shepherd_landscape.png` (16:9) | Good Shepherd plan-day hero · alt Home. Generic shepherd only |
-| `saint_michael_landscape.png` (16:9) | Courage devotional detail hero · alt plan |
-| `bible_rosary_candle.png` | Shop hero · Bible category devotionals |
-| `journal_prayer.png` | Journal hero / empty state · Prayer-Reset plan |
-| `family_prayer.png` | Gratitude plan · family devotionals |
-| `guardian_angel_child.png` | Paywall hero · Night devotionals |
+| `jesus_welcome_home.webp` | Home hero · Morning / Faith devotionals · Life-of-Jesus plan · Morning audio |
+| `jesus_with_child.webp` | Hope devotionals · NT-Week plan · Premium audio |
+| `mary_serene.webp` | Anxiety devotionals · Psalms plan · Worship audio |
+| `joseph_family.webp` (portrait 3:4) | Thumbnail / square slots for family scenes |
+| `saint_francis.webp` (portrait 3:4) | Thumbnail / square slots for nature devotionals |
+| `saint_therese.webp` (portrait 3:4) | Thumbnail / square slots for Saints devotionals |
+| `catholic_shepherd.webp` (portrait 3:4) | Psalm 23 audio artwork (56×56). Generic shepherd — never a specific living person |
+| `saint_michael.webp` (portrait 3:4) | Thumbnail / square slots for Courage devotionals |
+| `joseph_family_landscape.webp` (16:9) | Family devotional detail hero · alt Home hero · family plan header |
+| `saint_francis_landscape.webp` (16:9) | Nature devotional detail hero |
+| `saint_therese_landscape.webp` (16:9) | Saints devotional detail hero · Paywall alternate |
+| `catholic_shepherd_landscape.webp` (16:9) | Good Shepherd plan-day hero · alt Home. Generic shepherd only |
+| `saint_michael_landscape.webp` (16:9) | Courage devotional detail hero · alt plan |
+| `bible_rosary_candle.webp` | Shop hero · Bible category devotionals |
+| `journal_prayer.webp` | Journal hero / empty state · Prayer-Reset plan |
+| `family_prayer.webp` | Gratitude plan · family devotionals |
+| `guardian_angel_child.webp` | Paywall hero · Night devotionals |

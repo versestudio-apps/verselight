@@ -6,7 +6,7 @@ import '../utils/routes.dart';
 import '../utils/theme.dart';
 import '../widgets/affiliate_banner.dart';
 import '../widgets/app_state_scope.dart';
-import '../widgets/verse_card.dart';
+import '../widgets/daily_verse_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,6 +17,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
     final theme = Theme.of(context);
+    final today = _today;
+    final completed = appState.isDevotionalCompleted(today.id);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,91 +36,118 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        children: [
-          Text(_greeting(), style: theme.textTheme.displaySmall),
-          const SizedBox(height: 4),
-          Text(_formattedDate(), style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 16),
-          _StreakCard(streakDays: appState.streakDays),
-          const SizedBox(height: 20),
-          VerseCard(
-            title: "Today's focus",
-            verseText: _today.verseText,
-            verseRef: _today.verseRef,
-            bodyPreview: _today.bodyPreview,
-            onTap: () => AppRoutes.openDevotionalDetail(context, _today.id),
-          ),
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: () {
-              appState.selectTab(1);
-              AppRoutes.openDevotionalDetail(context, _today.id);
-            },
-            icon: const Icon(Icons.menu_book_rounded),
-            label: const Text("Read today's devotional"),
-          ),
-          const SizedBox(height: 20),
-          Row(
+      body: ListenableBuilder(
+        listenable: appState,
+        builder: (context, _) {
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
             children: [
-              Expanded(
-                child: _QuickTile(
-                  icon: Icons.menu_book_rounded,
-                  label: 'Devotional',
-                  color: AppColors.sageLight,
-                  onTap: () => appState.selectTab(1),
+              Text(
+                _greeting(),
+                style: theme.textTheme.displaySmall,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _formattedDate(),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  letterSpacing: 0.2,
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _QuickTile(
-                  icon: Icons.edit_note_rounded,
-                  label: 'Journal',
-                  color: AppColors.goldSoft.withValues(alpha: 0.5),
-                  onTap: () => appState.selectTab(2),
-                ),
+              const SizedBox(height: 16),
+              _StreakCard(streakDays: appState.streakDays),
+              const SizedBox(height: 22),
+              Text(
+                "Today's devotional",
+                style: theme.textTheme.titleLarge,
+              ),
+              const SizedBox(height: 10),
+              DailyVerseCard(
+                title: today.title,
+                verseText: today.verseText,
+                verseRef: today.verseRef,
+                preview: today.bodyPreview,
+                isCompleted: completed,
+                onTap: () =>
+                    AppRoutes.openDevotionalDetail(context, today.id),
+                onRead: () {
+                  appState.selectTab(1);
+                  AppRoutes.openDevotionalDetail(context, today.id);
+                },
+              ),
+              const SizedBox(height: 22),
+              Text('Quick access', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: _QuickAction(
+                      icon: Icons.menu_book_rounded,
+                      label: 'Devotional',
+                      subtitle: 'Daily readings',
+                      onTap: () => appState.selectTab(1),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _QuickAction(
+                      icon: Icons.edit_note_rounded,
+                      label: 'Journal',
+                      subtitle: 'Prayer notes',
+                      onTap: () => appState.selectTab(2),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: _QuickAction(
+                      icon: Icons.calendar_today_rounded,
+                      label: 'Plans',
+                      subtitle: 'Bible journeys',
+                      onTap: () => appState.selectTab(3),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _QuickAction(
+                      icon: Icons.headphones_rounded,
+                      label: 'Audio',
+                      subtitle: 'Listen & reflect',
+                      onTap: () => appState.selectTab(4),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 28),
+              Text(
+                'Curated for you',
+                style: theme.textTheme.titleLarge,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Hand-picked resources to deepen your walk',
+                style: theme.textTheme.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              const AffiliateBanner(
+                type: BannerType.amazonBook,
+                asin: 'B07BDCNF2J',
+                category: 'Staff pick',
+                title: 'NIV Study Bible',
+                subtitle: 'Trusted study edition · Amazon',
+              ),
+              const SizedBox(height: 10),
+              const AffiliateBanner(
+                type: BannerType.audible,
+                category: 'Listen',
+                title: 'Audible — faith audiobooks',
+                subtitle: 'Free trial · Listen on the go',
               ),
             ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _QuickTile(
-                  icon: Icons.calendar_today_rounded,
-                  label: 'Plans',
-                  color: AppColors.parchment,
-                  onTap: () => appState.selectTab(3),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _QuickTile(
-                  icon: Icons.headphones_rounded,
-                  label: 'Audio',
-                  color: AppColors.sageLight.withValues(alpha: 0.7),
-                  onTap: () => appState.selectTab(4),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Text('Recommended', style: theme.textTheme.titleLarge),
-          const SizedBox(height: 8),
-          const AffiliateBanner(
-            type: BannerType.amazonBook,
-            asin: 'B07BDCNF2J',
-            title: 'NIV Study Bible',
-            subtitle: 'View on Amazon →',
-          ),
-          const SizedBox(height: 8),
-          const AffiliateBanner(
-            type: BannerType.audible,
-            title: 'Listen on Audible',
-            subtitle: 'Free trial — Bible & devotionals',
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -150,66 +179,76 @@ class _StreakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.parchment,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            const Text('🔥', style: TextStyle(fontSize: 32)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$streakDays day streak',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.gold,
-                        ),
-                  ),
-                  Text(
-                    'Keep showing up — grace meets consistency.',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.parchment.withValues(alpha: 0.65),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          const Text('🔥', style: TextStyle(fontSize: 28)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$streakDays-day streak',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.gold,
+                      ),
+                ),
+                Text(
+                  'A quiet moment with God counts.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _QuickTile extends StatelessWidget {
-  const _QuickTile({
+class _QuickAction extends StatelessWidget {
+  const _QuickAction({
     required this.icon,
     required this.label,
-    required this.color,
+    required this.subtitle,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
-  final Color color;
+  final String subtitle;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: color,
+      color: AppColors.surface,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: AppColors.goldSoft.withValues(alpha: 0.45),
+            ),
+          ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: AppColors.sage, size: 26),
-              const SizedBox(height: 6),
+              Icon(icon, color: AppColors.sage, size: 24),
+              const SizedBox(height: 8),
               Text(label, style: Theme.of(context).textTheme.labelLarge),
+              const SizedBox(height: 2),
+              Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),

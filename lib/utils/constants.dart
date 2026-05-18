@@ -20,6 +20,10 @@ class AppConstants {
 
   static const String privacyUrl =
       'https://versestudio-apps.github.io/privacy/';
+  static const String termsUrl =
+      'https://versestudio-apps.github.io/privacy/';
+  static const String helpUrl =
+      'https://versestudio-apps.github.io/privacy/#help';
   static const String supportEmail = 'support@example.com';
 
   static const int freeDevotionalLimit = 3;

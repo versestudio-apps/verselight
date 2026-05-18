@@ -28,10 +28,25 @@ class SettingsScreen extends StatelessWidget {
           SwitchListTile(
             secondary: const Icon(Icons.notifications_outlined),
             title: const Text('Daily reminder'),
-            subtitle: const Text('Mock toggle — notifications later'),
+            subtitle: const Text('Coming soon'),
             value: true,
             onChanged: (_) {},
             activeThumbColor: AppColors.gold,
+          ),
+          const _SectionLabel('Support'),
+          ListTile(
+            leading: const Icon(Icons.help_outline_rounded),
+            title: const Text('Help & FAQ'),
+            subtitle: const Text('Common questions and how-tos'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => launchUrl(Uri.parse(AppConstants.helpUrl)),
+          ),
+          ListTile(
+            leading: const Icon(Icons.mail_outline_rounded),
+            title: const Text('Contact support'),
+            subtitle: Text(AppConstants.supportEmail),
+            onTap: () =>
+                launchUrl(Uri.parse('mailto:${AppConstants.supportEmail}')),
           ),
           const _SectionLabel('Data'),
           ListTile(
@@ -47,13 +62,15 @@ class SettingsScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
             title: const Text('Privacy policy'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
             onTap: () => launchUrl(Uri.parse(AppConstants.privacyUrl)),
           ),
           ListTile(
-            leading: const Icon(Icons.mail_outline_rounded),
-            title: const Text('Contact support'),
-            subtitle: Text(AppConstants.supportEmail),
-            onTap: () => launchUrl(Uri.parse('mailto:${AppConstants.supportEmail}')),
+            leading: const Icon(Icons.description_outlined),
+            title: const Text('Terms of use'),
+            subtitle: const Text('Placeholder — update before launch'),
+            trailing: const Icon(Icons.open_in_new_rounded, size: 18),
+            onTap: () => launchUrl(Uri.parse(AppConstants.termsUrl)),
           ),
           const Padding(
             padding: EdgeInsets.all(16),

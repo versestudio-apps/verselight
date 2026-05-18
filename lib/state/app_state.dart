@@ -105,6 +105,9 @@ class AppState extends ChangeNotifier {
 
   bool isPlanStarted(String planId) => startedPlanIds.contains(planId);
 
+  /// Mock local progress: day 1 once a plan is started (Phase 03).
+  int planProgressDay(String planId) => isPlanStarted(planId) ? 1 : 0;
+
   Future<void> onPremiumPurchased() async {
     IapService.instance.setPremiumForDemo(true);
     notifyListeners();

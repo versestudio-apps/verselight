@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
+import '../widgets/journal_note_card.dart';
 import '../widgets/screen_app_bar.dart';
+
+const _prayerPrompts = [
+  'Thank You for today\'s blessings…',
+  'Lord, give me peace about…',
+  'Help me trust You with…',
+  'I pray for strength to…',
+];
 
 class JournalScreen extends StatefulWidget {
   const JournalScreen({super.key});
@@ -20,6 +28,11 @@ class _JournalScreenState extends State<JournalScreen> {
     super.dispose();
   }
 
+  void _applyPrompt(String prompt) {
+    _controller.text = prompt;
+    _controller.selection = TextSelection.collapsed(offset: prompt.length);
+  }
+
   Future<void> _addEntry() async {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
@@ -31,6 +44,7 @@ class _JournalScreenState extends State<JournalScreen> {
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: const ScreenAppBar(title: 'Prayer Journal', showSettings: false),
@@ -40,33 +54,57 @@ class _JournalScreenState extends State<JournalScreen> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Write a prayer or reflection',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      'A quiet space for prayer',
+                      style: theme.textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Saved privately on this device.',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 12),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: _prayerPrompts.map((p) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ActionChip(
+                              label: Text(
+                                p,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 12,
+                                ),
+                              ),
+                              onPressed: () => _applyPrompt(p),
+                              backgroundColor: AppColors.parchment,
+                              side: BorderSide(
+                                color: AppColors.goldSoft.withValues(alpha: 0.6),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     TextField(
                       controller: _controller,
                       maxLines: 4,
                       textCapitalization: TextCapitalization.sentences,
                       decoration: const InputDecoration(
-                        hintText: 'Dear Lord, thank You for...',
+                        hintText: 'Write your prayer or reflection…',
                       ),
                     ),
                     const SizedBox(height: 12),
                     FilledButton.icon(
                       onPressed: _addEntry,
-                      icon: const Icon(Icons.add_rounded),
-                      label: const Text('Save note'),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Saved on this device. Your notes remain after you restart the app.',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      icon: const Icon(Icons.bookmark_add_outlined),
+                      label: const Text('Save to journal'),
                     ),
                   ],
                 ),
@@ -74,48 +112,19 @@ class _JournalScreenState extends State<JournalScreen> {
               const Divider(height: 1),
               Expanded(
                 child: appState.journalEntries.isEmpty
-                    ? _EmptyJournal()
+                    ? const _EmptyJournal()
                     : ListView.separated(
                         padding: const EdgeInsets.all(16),
                         itemCount: appState.journalEntries.length,
                         separatorBuilder: (_, __) =>
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 12),
                         itemBuilder: (context, index) {
                           final entry = appState.journalEntries[index];
-                          return Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          _formatTime(entry.createdAt),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall
-                                              ?.copyWith(color: AppColors.gold),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete_outline,
-                                            size: 20),
-                                        onPressed: () => appState
-                                            .removeJournalEntry(entry.id),
-                                        tooltip: 'Delete',
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    entry.text,
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                ],
-                              ),
-                            ),
+                          return JournalNoteCard(
+                            entry: entry,
+                            timeLabel: _formatTime(entry.createdAt),
+                            onDelete: () =>
+                                appState.removeJournalEntry(entry.id),
                           );
                         },
                       ),
@@ -136,28 +145,43 @@ class _JournalScreenState extends State<JournalScreen> {
 }
 
 class _EmptyJournal extends StatelessWidget {
+  const _EmptyJournal();
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.edit_note_rounded,
-            size: 56,
-            color: AppColors.warmBrownMuted.withValues(alpha: 0.5),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Your journal is empty',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Add your first prayer note above',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.sageLight,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.edit_note_rounded,
+                  size: 36, color: AppColors.sage),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Start your journal',
+              style: theme.textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Tap a prompt above or write freely. '
+              'Your prayers stay here until you choose to delete them.',
+              style: theme.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

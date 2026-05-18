@@ -22,18 +22,26 @@ class DevotionalScreen extends StatelessWidget {
         builder: (context, _) {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
-            itemCount: sampleDevotionals.length + 1,
+            itemCount: sampleDevotionals.length + 2,
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
-              if (index == sampleDevotionals.length) {
+              if (index == 0) {
+                return Text(
+                  'Short readings with reflection, prayer, and a simple action step.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                );
+              }
+              if (index == sampleDevotionals.length + 1) {
                 return const AffiliateBanner(
                   type: BannerType.audible,
+                  category: 'Listen',
                   title: 'Audio devotionals',
-                  subtitle: 'Try Audible free →',
+                  subtitle: 'Try Audible free · Bible on audio',
                 );
               }
 
-              final devo = sampleDevotionals[index];
+              final devo = sampleDevotionals[index - 1];
+
               final card = VerseCard(
                 title: devo.title,
                 verseText: devo.verseText,

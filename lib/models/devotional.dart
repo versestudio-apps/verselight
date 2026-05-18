@@ -7,6 +7,8 @@ class Devotional {
     required this.bodyPreview,
     required this.bodyFull,
     required this.reflectionPrompt,
+    required this.prayerPrompt,
+    required this.actionStep,
     this.isPremium = false,
   });
 
@@ -17,5 +19,7 @@ class Devotional {
   final String bodyPreview;
   final String bodyFull;
   final String reflectionPrompt;
+  final String prayerPrompt;
+  final String actionStep;
   final bool isPremium;
 }

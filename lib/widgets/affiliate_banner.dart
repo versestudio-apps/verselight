@@ -12,15 +12,22 @@ class AffiliateBanner extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.asin,
+    this.category,
   });
 
   final BannerType type;
   final String title;
   final String subtitle;
   final String? asin;
+  final String? category;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = type == BannerType.audible
+        ? const Color(0xFF00A8E1)
+        : AppColors.gold;
+
     return Card(
       child: InkWell(
         onTap: _onTap,
@@ -28,24 +35,21 @@ class AffiliateBanner extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
-                  color: (type == BannerType.audible
-                          ? const Color(0xFF00A8E1)
-                          : AppColors.gold)
-                      .withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  color: accent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   type == BannerType.audible
                       ? Icons.headphones_rounded
                       : Icons.menu_book_rounded,
-                  color: type == BannerType.audible
-                      ? const Color(0xFF00A8E1)
-                      : AppColors.gold,
+                  color: accent,
+                  size: 26,
                 ),
               ),
               const SizedBox(width: 14),
@@ -53,22 +57,25 @@ class AffiliateBanner extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.gold,
-                          ),
-                    ),
+                    if (category != null) ...[
+                      Text(
+                        category!.toUpperCase(),
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          fontSize: 10,
+                          letterSpacing: 1,
+                          color: accent,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                    ],
+                    Text(title, style: theme.textTheme.titleMedium),
+                    const SizedBox(height: 4),
+                    Text(subtitle, style: theme.textTheme.bodySmall),
                   ],
                 ),
               ),
-              const Icon(
-                Icons.open_in_new_rounded,
-                size: 18,
-                color: AppColors.warmBrownMuted,
-              ),
+              Icon(Icons.north_east_rounded,
+                  size: 18, color: AppColors.warmBrownMuted),
             ],
           ),
         ),

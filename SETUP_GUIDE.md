@@ -118,11 +118,15 @@ flutter run
 
 ```bash
 # Build release APK
-flutter build apk --release --dart-define=OPENAI_KEY=sk-your-key-here
+flutter build apk --release
 
 # File APK ở:
 # build/app/outputs/flutter-apk/app-release.apk
 ```
+
+> **AI / OpenAI:** Không đưa API key LLM vào Flutter app (không dùng `--dart-define`, không hardcode trong code).
+> Khi cần tính năng AI, gọi backend bạn kiểm soát (Firebase Function, server riêng, Cloudflare Worker);
+> secret chỉ lưu phía server.
 
 ---
 

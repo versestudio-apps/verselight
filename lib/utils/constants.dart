@@ -1,4 +1,4 @@
-/// App-wide constants. No real API keys — use dart-define or remote config later.
+/// App-wide constants. No third-party LLM or provider secrets in the client.
 class AppConstants {
   AppConstants._();
 

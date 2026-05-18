@@ -1,21 +1,25 @@
-/// Placeholder for OpenAI / on-device prayer assistant.
-/// Wire with `--dart-define=OPENAI_KEY=...` or a secure backend later.
+/// Placeholder for AI Prayer Partner (Phase 03+).
+///
+/// The Flutter app must **not** call OpenAI (or any LLM provider) directly and
+/// must **not** embed provider secrets. When ready, call a server you control,
+/// for example:
+/// - Firebase Cloud Function
+/// - Your own HTTPS backend
+/// - Cloudflare Worker
+///
+/// The server holds provider credentials and enforces auth, rate limits, and
+/// content policy.
 class AiService {
   AiService._();
   static final AiService instance = AiService._();
 
-  static const String _keyFromEnv =
-      String.fromEnvironment('OPENAI_KEY', defaultValue: '');
-
-  bool get isConfigured => _keyFromEnv.isNotEmpty;
+  /// Remote AI is not wired in the client yet.
+  bool get isConfigured => false;
 
   Future<String> suggestPrayerPrompt({required String userTopic}) async {
     await Future<void>.delayed(const Duration(milliseconds: 400));
-    if (!isConfigured) {
-      return 'AI Prayer Partner is not configured yet. '
-          'Add OPENAI_KEY via dart-define when you integrate the backend.';
-    }
-    // TODO: call OpenAI API through a secure proxy — never ship raw keys in APK.
-    return 'Lord, guide me as I reflect on: $userTopic. Amen.';
+    return 'AI Prayer Partner is coming soon. '
+        'Responses will be generated through a secure backend—not from this app. '
+        'Topic you shared: $userTopic';
   }
 }

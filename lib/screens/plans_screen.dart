@@ -4,6 +4,7 @@ import '../data/sample_plans.dart';
 import '../models/reading_plan.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
+import '../widgets/app_state_scope.dart';
 import '../widgets/screen_app_bar.dart';
 
 class PlansScreen extends StatelessWidget {
@@ -11,17 +12,25 @@ class PlansScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = AppStateScope.of(context);
+
     return Scaffold(
       appBar: const ScreenAppBar(title: 'Reading Plans', showSettings: false),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: samplePlans.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
-        itemBuilder: (context, index) {
-          final plan = samplePlans[index];
-          return _PlanTile(
-            plan: plan,
-            onTap: () => AppRoutes.openPlanDetail(context, plan.id),
+      body: ListenableBuilder(
+        listenable: appState,
+        builder: (context, _) {
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: samplePlans.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (context, index) {
+              final plan = samplePlans[index];
+              return _PlanTile(
+                plan: plan,
+                isStarted: appState.isPlanStarted(plan.id),
+                onTap: () => AppRoutes.openPlanDetail(context, plan.id),
+              );
+            },
           );
         },
       ),
@@ -30,9 +39,14 @@ class PlansScreen extends StatelessWidget {
 }
 
 class _PlanTile extends StatelessWidget {
-  const _PlanTile({required this.plan, required this.onTap});
+  const _PlanTile({
+    required this.plan,
+    required this.isStarted,
+    required this.onTap,
+  });
 
   final ReadingPlan plan;
+  final bool isStarted;
   final VoidCallback onTap;
 
   @override
@@ -44,7 +58,9 @@ class _PlanTile extends StatelessWidget {
         leading: Text(plan.emoji, style: const TextStyle(fontSize: 28)),
         title: Text(plan.title, style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(
-          '${plan.durationDays} days · ${plan.description}',
+          isStarted
+              ? 'In progress · ${plan.durationDays} days'
+              : '${plan.durationDays} days · ${plan.description}',
           style: Theme.of(context).textTheme.bodySmall,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,

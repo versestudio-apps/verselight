@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../services/iap_service.dart';
+import '../widgets/app_state_scope.dart';
 import '../utils/constants.dart';
-import '../utils/routes.dart';
 import '../utils/theme.dart';
 
 class PaywallScreen extends StatefulWidget {
@@ -31,9 +31,11 @@ class _PaywallScreenState extends State<PaywallScreen> {
           : AppConstants.skuPremiumMonthly;
       await IapService.instance.purchase(sku);
       if (!mounted) return;
-      AppRoutes.notifyPremiumChanged(context);
+      await AppStateScope.of(context).onPremiumPurchased();
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(content: Text('Premium enabled (mock purchase)')),
       );
     } catch (e) {
@@ -60,8 +62,15 @@ class _PaywallScreenState extends State<PaywallScreen> {
             onPressed: () async {
               await IapService.instance.restorePurchases();
               if (!context.mounted) return;
+              AppStateScope.of(context).onPremiumUpdated();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Restore complete (mock)')),
+                SnackBar(
+                  content: Text(
+                    IapService.instance.isPremium
+                        ? 'Premium restored'
+                        : 'No purchases to restore',
+                  ),
+                ),
               );
             },
             child: const Text('Restore'),

@@ -11,6 +11,7 @@ class VerseCard extends StatelessWidget {
     this.title,
     this.bodyPreview,
     this.isPremium = false,
+    this.isCompleted = false,
     this.onTap,
   });
 
@@ -19,6 +20,7 @@ class VerseCard extends StatelessWidget {
   final String verseRef;
   final String? bodyPreview;
   final bool isPremium;
+  final bool isCompleted;
   final VoidCallback? onTap;
 
   @override
@@ -41,7 +43,13 @@ class VerseCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
-                    if (isPremium)
+                    if (isCompleted)
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        size: 18,
+                        color: AppColors.sage,
+                      )
+                    else if (isPremium)
                       const Icon(
                         Icons.lock_rounded,
                         size: 18,

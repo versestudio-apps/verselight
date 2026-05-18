@@ -2,18 +2,45 @@ import 'package:flutter/material.dart';
 
 import '../models/devotional.dart';
 import '../utils/theme.dart';
+import '../widgets/app_state_scope.dart';
 
-class DevotionalDetailScreen extends StatelessWidget {
+class DevotionalDetailScreen extends StatefulWidget {
   const DevotionalDetailScreen({super.key, required this.devotional});
 
   final Devotional devotional;
 
   @override
+  State<DevotionalDetailScreen> createState() => _DevotionalDetailScreenState();
+}
+
+class _DevotionalDetailScreenState extends State<DevotionalDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      AppStateScope.of(context)
+          .markDevotionalCompleted(widget.devotional.id);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final devotional = widget.devotional;
     final theme = Theme.of(context);
+    final appState = AppStateScope.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(devotional.title)),
+      appBar: AppBar(
+        title: Text(devotional.title),
+        actions: [
+          if (appState.isDevotionalCompleted(devotional.id))
+            const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: Icon(Icons.check_circle_rounded, color: AppColors.sage),
+            ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [

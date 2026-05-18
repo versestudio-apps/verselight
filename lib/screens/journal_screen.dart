@@ -20,12 +20,12 @@ class _JournalScreenState extends State<JournalScreen> {
     super.dispose();
   }
 
-  void _addEntry() {
+  Future<void> _addEntry() async {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
-    AppStateScope.of(context).addJournalEntry(text);
+    await AppStateScope.of(context).addJournalEntry(text);
     _controller.clear();
-    FocusScope.of(context).unfocus();
+    if (mounted) FocusScope.of(context).unfocus();
   }
 
   @override
@@ -65,7 +65,7 @@ class _JournalScreenState extends State<JournalScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Phase 01: notes stay in memory until you close the app.',
+                      'Saved on this device. Your notes remain after you restart the app.',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],

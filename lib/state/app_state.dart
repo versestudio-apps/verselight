@@ -1,18 +1,59 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../models/prayer_entry.dart';
 import '../services/iap_service.dart';
+import '../services/local_storage_service.dart';
 
-/// In-memory session state for Phase 01 (no persistence / Firebase yet).
+/// App session state with Phase 02 local persistence.
 class AppState extends ChangeNotifier {
   int tabIndex = 0;
   final List<PrayerEntry> journalEntries = [];
+  final Set<String> startedPlanIds = {};
+  final Set<String> completedDevotionalIds = {};
   String? playingAudioId;
 
-  /// Mock streak for Home UI.
+  /// Mock streak for Home UI (not persisted in Phase 02).
   int streakDays = 7;
 
   bool get isPremium => IapService.instance.isPremium;
+
+  final LocalStorageService _storage = LocalStorageService.instance;
+
+  Future<void> loadFromStorage() async {
+    try {
+      journalEntries
+        ..clear()
+        ..addAll(await _storage.loadJournalEntries());
+
+      startedPlanIds
+        ..clear()
+        ..addAll(await _storage.loadStartedPlanIds());
+
+      completedDevotionalIds
+        ..clear()
+        ..addAll(await _storage.loadCompletedDevotionalIds());
+
+      playingAudioId = await _storage.loadPlayingAudioId();
+
+      final premium = await _storage.loadPremiumUnlocked();
+      IapService.instance.setPremiumForDemo(premium);
+    } catch (e, st) {
+      debugPrint('[AppState] load failed, using defaults: $e\n$st');
+    }
+    notifyListeners();
+  }
+
+  Future<void> resetAllLocalData() async {
+    await _storage.clearAll();
+    journalEntries.clear();
+    startedPlanIds.clear();
+    completedDevotionalIds.clear();
+    playingAudioId = null;
+    IapService.instance.setPremiumForDemo(false);
+    notifyListeners();
+  }
 
   void selectTab(int index) {
     if (index < 0 || index > 5) return;
@@ -21,7 +62,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addJournalEntry(String text) {
+  Future<void> addJournalEntry(String text) async {
     journalEntries.insert(
       0,
       PrayerEntry(
@@ -31,16 +72,43 @@ class AppState extends ChangeNotifier {
       ),
     );
     notifyListeners();
+    unawaited(_storage.saveJournalEntries(List.from(journalEntries)));
   }
 
-  void removeJournalEntry(String id) {
+  Future<void> removeJournalEntry(String id) async {
     journalEntries.removeWhere((e) => e.id == id);
     notifyListeners();
+    unawaited(_storage.saveJournalEntries(List.from(journalEntries)));
   }
 
-  void setPlayingAudio(String? trackId) {
+  Future<void> setPlayingAudio(String? trackId) async {
     playingAudioId = trackId;
     notifyListeners();
+    unawaited(_storage.savePlayingAudioId(trackId));
+  }
+
+  Future<void> markDevotionalCompleted(String id) async {
+    if (id.isEmpty) return;
+    if (!completedDevotionalIds.add(id)) return;
+    notifyListeners();
+    unawaited(_storage.saveCompletedDevotionalIds(completedDevotionalIds));
+  }
+
+  bool isDevotionalCompleted(String id) => completedDevotionalIds.contains(id);
+
+  Future<void> startPlan(String planId) async {
+    if (planId.isEmpty) return;
+    if (!startedPlanIds.add(planId)) return;
+    notifyListeners();
+    unawaited(_storage.saveStartedPlanIds(startedPlanIds));
+  }
+
+  bool isPlanStarted(String planId) => startedPlanIds.contains(planId);
+
+  Future<void> onPremiumPurchased() async {
+    IapService.instance.setPremiumForDemo(true);
+    notifyListeners();
+    unawaited(_storage.savePremiumUnlocked(true));
   }
 
   void onPremiumUpdated() => notifyListeners();

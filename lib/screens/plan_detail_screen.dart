@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/reading_plan.dart';
 import '../utils/theme.dart';
+import '../widgets/app_state_scope.dart';
 
 class PlanDetailScreen extends StatelessWidget {
   const PlanDetailScreen({super.key, required this.plan});
@@ -76,14 +77,29 @@ class PlanDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Started "${plan.title}" (mock)')),
+          ListenableBuilder(
+            listenable: AppStateScope.of(context),
+            builder: (context, _) {
+              final started =
+                  AppStateScope.of(context).isPlanStarted(plan.id);
+              return FilledButton.icon(
+                onPressed: started
+                    ? null
+                    : () async {
+                        await AppStateScope.of(context).startPlan(plan.id);
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Started "${plan.title}"'),
+                          ),
+                        );
+                      },
+                icon: Icon(
+                  started ? Icons.check_rounded : Icons.play_arrow_rounded,
+                ),
+                label: Text(started ? 'Plan in progress' : 'Start plan'),
               );
             },
-            icon: const Icon(Icons.play_arrow_rounded),
-            label: const Text('Start plan'),
           ),
         ],
       ),

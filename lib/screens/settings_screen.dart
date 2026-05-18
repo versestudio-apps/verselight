@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../utils/constants.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
+import '../widgets/app_state_scope.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -31,6 +32,16 @@ class SettingsScreen extends StatelessWidget {
             value: true,
             onChanged: (_) {},
             activeThumbColor: AppColors.gold,
+          ),
+          const _SectionLabel('Data'),
+          ListTile(
+            leading: const Icon(Icons.delete_outline_rounded,
+                color: AppColors.warmBrownMuted),
+            title: const Text('Reset local data'),
+            subtitle: const Text(
+              'Clears journal, premium mock, plans, devotionals & audio',
+            ),
+            onTap: () => _confirmReset(context),
           ),
           const _SectionLabel('Legal'),
           ListTile(
@@ -65,6 +76,38 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _confirmReset(BuildContext context) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Reset local data?'),
+      content: const Text(
+        'This removes saved journal notes, premium unlock, reading plan '
+        'progress, completed devotionals, and audio playback on this device.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(ctx, true),
+          child: const Text('Reset'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirmed != true || !context.mounted) return;
+
+  await AppStateScope.of(context).resetAllLocalData();
+  if (!context.mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Local data reset')),
+  );
 }
 
 class _SectionLabel extends StatelessWidget {

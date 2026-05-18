@@ -61,7 +61,7 @@ class AppRoutes {
     );
   }
 
-  static void notifyPremiumChanged(BuildContext context) {
-    AppStateScope.of(context).onPremiumUpdated();
+  static Future<void> notifyPremiumChanged(BuildContext context) async {
+    await AppStateScope.of(context).onPremiumPurchased();
   }
 }

@@ -195,3 +195,52 @@ dart fix --apply         # Auto-fix Dart warnings
 
 **Lỗi: `Shop screen import error`**
 → File `shop_screen.dart` có 2 import blocks — gộp lại thành 1
+
+**APK release còn bundle file asset cũ sau khi rename / đổi extension (vd PNG → WebP)**
+
+Trên Windows, `flutter clean` đôi khi không xoá hết `build/` và `.dart_tool/`
+nếu Gradle/Java daemon đang giữ file lock (output thường báo "Deleting
+build... 44ms" — nhanh bất thường vì một số file bị skip im lặng). Lần
+build tiếp theo có thể tái sử dụng cached asset bundle từ đợt build trước
+→ APK còn chứa cả file cũ lẫn file mới (vd cả `.png` cũ và `.webp` mới).
+
+Triệu chứng: kích thước APK release lớn bất thường, hoặc giải nén APK
+thấy có cả 2 extension dù filesystem chỉ còn 1.
+
+Cách xử lý an toàn (chỉ cần khi rename / đổi extension asset, không cần
+cho thay đổi code Dart bình thường):
+
+```powershell
+# 1. Dừng mọi Gradle / Java daemon đang chạy
+Get-Process java -ErrorAction SilentlyContinue | Stop-Process -Force
+
+# 2. Xoá thủ công build & cache dirs
+Remove-Item -Recurse -Force build, .dart_tool, android/.gradle `
+  -ErrorAction SilentlyContinue
+
+# 3. Build lại từ đầu
+flutter build apk --release
+```
+
+Hoặc bash equivalent (cần kill Java trước cùng cách):
+```bash
+rm -rf build .dart_tool android/.gradle .flutter-plugins-dependencies
+flutter build apk --release
+```
+
+Sau đó verify APK không còn file extension cũ:
+```powershell
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$apk = 'build/app/outputs/flutter-apk/app-release.apk'
+$zip = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path $apk))
+$zip.Entries | Where-Object { $_.FullName -match '\.png$|\.webp$' } |
+  Group-Object { [System.IO.Path]::GetExtension($_.FullName) } |
+  Format-Table Name, Count
+$zip.Dispose()
+```
+
+Lý do `flutter clean` đơn thuần không đủ: Flutter SDK ghi staged assets
+vào `build/app/intermediates/flutter/release/flutter_assets/` qua task
+`mergeFlutterAssets`. Nếu thư mục này không được xoá triệt để (do file
+lock), task này sẽ bỏ qua bước "regenerate", chỉ ghi đè file mới và để
+file cũ nguyên — kết quả là cả 2 cùng lọt vào AAR merge → APK final.

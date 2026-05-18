@@ -11,7 +11,7 @@ import '../widgets/daily_verse_card.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  static Devotional get _today => sampleDevotionals.first;
+  Devotional get _today => todayDevotional();
 
   @override
   Widget build(BuildContext context) {

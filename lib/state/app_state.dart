@@ -2,19 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../data/content_library.dart';
 import '../models/prayer_entry.dart';
 import '../services/iap_service.dart';
 import '../services/local_storage_service.dart';
 
-/// App session state with Phase 02 local persistence.
+/// App session state with Phase 02+ local persistence.
 class AppState extends ChangeNotifier {
   int tabIndex = 0;
   final List<PrayerEntry> journalEntries = [];
   final Set<String> startedPlanIds = {};
   final Set<String> completedDevotionalIds = {};
+  final Map<String, int> planCurrentDay = {};
   String? playingAudioId;
 
-  /// Mock streak for Home UI (not persisted in Phase 02).
   int streakDays = 7;
 
   bool get isPremium => IapService.instance.isPremium;
@@ -29,11 +30,25 @@ class AppState extends ChangeNotifier {
 
       startedPlanIds
         ..clear()
-        ..addAll(await _storage.loadStartedPlanIds());
+        ..addAll(
+          ContentLibrary.sanitizeStartedPlanIds(
+            await _storage.loadStartedPlanIds(),
+          ),
+        );
 
       completedDevotionalIds
         ..clear()
-        ..addAll(await _storage.loadCompletedDevotionalIds());
+        ..addAll(
+          ContentLibrary.sanitizeDevotionalIds(
+            await _storage.loadCompletedDevotionalIds(),
+          ),
+        );
+
+      planCurrentDay
+        ..clear()
+        ..addAll(await _storage.loadPlanProgress());
+
+      _sanitizePlanProgress();
 
       playingAudioId = await _storage.loadPlayingAudioId();
 
@@ -45,11 +60,30 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _sanitizePlanProgress() {
+    final keys = planCurrentDay.keys.toList();
+    for (final planId in keys) {
+      if (!ContentLibrary.planIds.contains(planId)) {
+        planCurrentDay.remove(planId);
+        continue;
+      }
+      final plan = ContentLibrary.planById(planId);
+      if (plan == null) continue;
+      final day = planCurrentDay[planId]!;
+      if (day < 1) {
+        planCurrentDay[planId] = 1;
+      } else if (day > plan.durationDays) {
+        planCurrentDay[planId] = plan.durationDays;
+      }
+    }
+  }
+
   Future<void> resetAllLocalData() async {
     await _storage.clearAll();
     journalEntries.clear();
     startedPlanIds.clear();
     completedDevotionalIds.clear();
+    planCurrentDay.clear();
     playingAudioId = null;
     IapService.instance.setPremiumForDemo(false);
     notifyListeners();
@@ -88,7 +122,7 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> markDevotionalCompleted(String id) async {
-    if (id.isEmpty) return;
+    if (id.isEmpty || !ContentLibrary.devotionalIds.contains(id)) return;
     if (!completedDevotionalIds.add(id)) return;
     notifyListeners();
     unawaited(_storage.saveCompletedDevotionalIds(completedDevotionalIds));
@@ -97,16 +131,43 @@ class AppState extends ChangeNotifier {
   bool isDevotionalCompleted(String id) => completedDevotionalIds.contains(id);
 
   Future<void> startPlan(String planId) async {
-    if (planId.isEmpty) return;
+    if (planId.isEmpty || !ContentLibrary.planIds.contains(planId)) return;
     if (!startedPlanIds.add(planId)) return;
+    planCurrentDay[planId] = 1;
     notifyListeners();
     unawaited(_storage.saveStartedPlanIds(startedPlanIds));
+    unawaited(_storage.savePlanProgress(Map.from(planCurrentDay)));
   }
 
   bool isPlanStarted(String planId) => startedPlanIds.contains(planId);
 
-  /// Mock local progress: day 1 once a plan is started (Phase 03).
-  int planProgressDay(String planId) => isPlanStarted(planId) ? 1 : 0;
+  int planProgressDay(String planId) {
+    if (!isPlanStarted(planId)) return 0;
+    return planCurrentDay[planId] ?? 1;
+  }
+
+  bool isPlanDayCompleted(String planId, int dayNumber) {
+    final current = planProgressDay(planId);
+    return current > 0 && dayNumber < current;
+  }
+
+  bool isPlanCurrentDay(String planId, int dayNumber) {
+    return planProgressDay(planId) == dayNumber;
+  }
+
+  Future<void> completeCurrentPlanDay(String planId) async {
+    final plan = ContentLibrary.planById(planId);
+    if (plan == null) return;
+    if (!isPlanStarted(planId)) {
+      await startPlan(planId);
+    }
+    final current = planCurrentDay[planId] ?? 1;
+    if (current < plan.durationDays) {
+      planCurrentDay[planId] = current + 1;
+    }
+    notifyListeners();
+    unawaited(_storage.savePlanProgress(Map.from(planCurrentDay)));
+  }
 
   Future<void> onPremiumPurchased() async {
     IapService.instance.setPremiumForDemo(true);

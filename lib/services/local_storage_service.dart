@@ -12,6 +12,7 @@ abstract final class _Keys {
   static const startedPlanIds = 'started_plan_ids_v1';
   static const completedDevotionalIds = 'completed_devotional_ids_v1';
   static const playingAudioId = 'playing_audio_id_v1';
+  static const planProgress = 'plan_progress_v1';
 }
 
 /// Local persistence via [SharedPreferences] (Phase 02).
@@ -142,6 +143,37 @@ class LocalStorageService {
     }
   }
 
+  Future<Map<String, int>> loadPlanProgress() async {
+    try {
+      final raw = _store.getString(_Keys.planProgress);
+      if (raw == null || raw.isEmpty) return {};
+
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map) return {};
+
+      final result = <String, int>{};
+      decoded.forEach((key, value) {
+        if (key is String && value is int && value > 0) {
+          result[key] = value;
+        } else if (key is String && value is num && value > 0) {
+          result[key] = value.toInt();
+        }
+      });
+      return result;
+    } catch (e, st) {
+      debugPrint('[LocalStorage] plan progress load failed: $e\n$st');
+      return {};
+    }
+  }
+
+  Future<void> savePlanProgress(Map<String, int> progress) async {
+    try {
+      await _store.setString(_Keys.planProgress, jsonEncode(progress));
+    } catch (e, st) {
+      debugPrint('[LocalStorage] plan progress save failed: $e\n$st');
+    }
+  }
+
   Future<void> savePlayingAudioId(String? id) async {
     try {
       if (id == null || id.isEmpty) {
@@ -163,6 +195,7 @@ class LocalStorageService {
       await _store.remove(_Keys.startedPlanIds);
       await _store.remove(_Keys.completedDevotionalIds);
       await _store.remove(_Keys.playingAudioId);
+      await _store.remove(_Keys.planProgress);
     } catch (e, st) {
       debugPrint('[LocalStorage] clear failed: $e\n$st');
     }

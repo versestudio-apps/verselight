@@ -20,9 +20,14 @@ class ReadingPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final progress = isStarted
-        ? (progressDay / plan.durationDays).clamp(0.0, 1.0)
-        : 0.0;
+    final completedDays =
+        isStarted ? (progressDay - 1).clamp(0, plan.durationDays) : 0;
+    final finished = isStarted && progressDay > plan.durationDays;
+    final progress = finished
+        ? 1.0
+        : (isStarted
+            ? (completedDays / plan.durationDays).clamp(0.0, 1.0)
+            : 0.0);
 
     return Card(
       child: InkWell(
@@ -57,7 +62,7 @@ class ReadingPlanCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${plan.durationDays} days',
+                          '${plan.durationDays} days · ${plan.category}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: AppColors.gold,
                             fontWeight: FontWeight.w600,
@@ -72,7 +77,7 @@ class ReadingPlanCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                plan.description,
+                plan.subtitle,
                 style: theme.textTheme.bodyMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -87,20 +92,24 @@ class ReadingPlanCard extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.sageLight,
+                        color: finished
+                            ? AppColors.goldSoft.withValues(alpha: 0.5)
+                            : AppColors.sageLight,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'In progress',
+                        finished ? 'Completed' : 'In progress',
                         style: theme.textTheme.labelLarge?.copyWith(
                           fontSize: 11,
-                          color: AppColors.sage,
+                          color: finished ? AppColors.gold : AppColors.sage,
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Day $progressDay of ${plan.durationDays}',
+                      finished
+                          ? '${plan.durationDays} days done'
+                          : 'Day $progressDay · $completedDays completed',
                       style: theme.textTheme.bodySmall,
                     ),
                   ],

@@ -54,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
                 color: AppColors.warmBrownMuted),
             title: const Text('Reset local data'),
             subtitle: const Text(
-              'Clears journal, premium mock, plans, devotionals & audio',
+              'Clears journal, premium mock, plan progress, devotionals & audio',
             ),
             onTap: () => _confirmReset(context),
           ),
@@ -102,7 +102,7 @@ Future<void> _confirmReset(BuildContext context) async {
       title: const Text('Reset local data?'),
       content: const Text(
         'This removes saved journal notes, premium unlock, reading plan '
-        'progress, completed devotionals, and audio playback on this device.',
+        'progress, completed devotionals, plan day progress, and audio on this device.',
       ),
       actions: [
         TextButton(

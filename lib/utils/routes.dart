@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../data/sample_devotionals.dart';
-import '../data/sample_plans.dart';
+import '../data/content_library.dart';
 import '../screens/devotional_detail_screen.dart';
 import '../screens/paywall_screen.dart';
 import '../screens/plan_detail_screen.dart';
@@ -28,7 +27,7 @@ class AppRoutes {
   }
 
   static void openDevotionalDetail(BuildContext context, String id) {
-    final devo = devotionalById(id);
+    final devo = ContentLibrary.devotionalById(id);
     if (devo == null) return;
 
     final appState = AppStateScope.of(context);
@@ -45,7 +44,7 @@ class AppRoutes {
   }
 
   static void openPlanDetail(BuildContext context, String id) {
-    final plan = planById(id);
+    final plan = ContentLibrary.planById(id);
     if (plan == null) return;
 
     final appState = AppStateScope.of(context);

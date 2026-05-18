@@ -57,6 +57,30 @@ class _DevotionalDetailScreenState extends State<DevotionalDetailScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 36),
         children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              Chip(
+                label: Text(devotional.category),
+                backgroundColor: AppColors.parchment,
+                side: BorderSide.none,
+              ),
+              Chip(
+                label: Text('${devotional.durationMinutes} min read'),
+                backgroundColor: AppColors.sageLight,
+                side: BorderSide.none,
+              ),
+              if (devotional.isPremium)
+                const Chip(
+                  avatar: Icon(Icons.workspace_premium_rounded,
+                      size: 16, color: AppColors.premium),
+                  label: Text('Premium'),
+                  side: BorderSide.none,
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
@@ -93,7 +117,7 @@ class _DevotionalDetailScreenState extends State<DevotionalDetailScreen> {
           ContentSection(
             icon: Icons.wb_sunny_outlined,
             title: 'Reflection',
-            body: devotional.bodyFull,
+            body: devotional.reflection,
           ),
           const SizedBox(height: 14),
           ContentSection(
@@ -120,7 +144,7 @@ class _DevotionalDetailScreenState extends State<DevotionalDetailScreen> {
           ),
           const SizedBox(height: 6),
           Text(
-            devotional.reflectionPrompt,
+            devotional.journalPrompt,
             style: theme.textTheme.bodyLarge?.copyWith(
               fontStyle: FontStyle.italic,
             ),

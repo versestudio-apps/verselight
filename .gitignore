@@ -45,3 +45,15 @@ app.*.map.json
 /android/app/release
 
 docs/releases/**/*.apk
+
+# Android release signing secrets — NEVER commit these.
+# Real keystore + password files live OUTSIDE the repo (see
+# docs/releases/phase-09f-release-signing/RELEASE_SIGNING.md).
+# Only android/key.properties.example (placeholders) is tracked.
+android/key.properties
+key.properties
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key

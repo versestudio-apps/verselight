@@ -1,0 +1,25 @@
+# VerseLight — Android release signing properties (EXAMPLE / TEMPLATE).
+#
+# This .example file is TRACKED in git as a template only.
+# The real file MUST be named `android/key.properties` (no `.example`
+# suffix) and is gitignored. Never commit real passwords or keystore paths.
+#
+# How to use:
+#   1. Copy this file to `android/key.properties` (same folder).
+#   2. Replace every CHANGE_ME with a real value.
+#   3. Make sure `storeFile` points to your keystore OUTSIDE the repo
+#      (e.g. C:\Users\<you>\.android\verselight-upload-key.jks on Windows,
+#      or ~/.android/verselight-upload-key.jks on macOS / Linux).
+#   4. Run `flutter build apk --release` — gradle picks up the config and
+#      produces a signed release APK.
+#
+# See docs/releases/phase-09f-release-signing/RELEASE_SIGNING.md for the
+# full keystore-generation + verification workflow.
+
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=verselight-upload
+# Windows path (escape backslashes for Java Properties):
+storeFile=C:\\Users\\Admin\\.android\\verselight-upload-key.jks
+# macOS / Linux equivalent (single forward slashes, no escaping):
+# storeFile=/Users/you/.android/verselight-upload-key.jks

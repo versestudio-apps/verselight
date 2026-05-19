@@ -25,21 +25,25 @@ Keystore + password remain local only, never committed. See [Phase 09G RELEASE_N
 
 ---
 
-## 2. 🔴 In-app purchase hoàn toàn mock
+## 2. ✅ ~~🔴 In-app purchase hoàn toàn mock~~ — STORE-BLOCKER RESOLVED (Phase 09H)
 
-**Nơi:**
-- [lib/services/iap_service.dart](../../../lib/services/iap_service.dart) — class `IapService` chỉ persist entitlement vào `shared_preferences`, không gọi store SDK.
-- `pubspec.yaml` không có package `in_app_purchase` / không có Amazon IAP SDK.
+**Status:** Phase 09H gated the entire mock IAP surface behind
+[`AppConstants.kEnableMockPurchases`](../../../lib/utils/constants.dart) (default `false`). In the store build:
 
-**Implication:**
-- Tester nhấn "Subscribe (mock)" → app set entitlement local → unlock premium content. Không có thanh toán thật.
-- `TESTER_CHECKLIST.md` Section G đã nhắc tester KHÔNG thử thẻ thật.
-- Upload Amazon trong trạng thái này = vi phạm policy (quảng cáo subscription nhưng không có billing thực).
+- No Subscribe / Restore buttons are visible (paywall, settings).
+- No prices ($2.99/month, $19.99/year) are displayed.
+- No "(mock)" / "(beta)" copy reaches the user.
+- `PremiumGate` and `PremiumAccess` bypass the gate → all premium-marked content accessible.
+- Paywall route survives as a "COMING SOON" teaser advertising upcoming features, without a purchase path.
 
-**Fix (Phase 09H):**
-1. Quyết định strategy: Amazon IAP (cho Amazon Appstore) hoặc Google Play Billing (cho Play Store) — hoặc cả hai với flavor.
-2. Thêm package phù hợp (`amazon_iap` chưa có official Flutter plugin → có thể cần platform channel; hoặc dùng `in_app_purchase` của Flutter cho Google Play).
-3. Thay private methods TODO trong `IapService` để gọi real store SDK, giữ giao diện public ổn định để các màn paywall không phải sửa.
+`IapService` mock logic preserved (tests unchanged) so the flag can flip back for dev or be replaced by real Amazon IAP / Play Billing in a later phase. Full breakdown in [`../phase-09h-iap-risk/AUDIT.md`](../phase-09h-iap-risk/AUDIT.md).
+
+**Still required before public production launch (out of 09H scope):**
+1. Amazon Developer console: create In-App Items / Subscriptions for SKUs `verselight_premium_monthly` / `verselight_premium_yearly`.
+2. Wire real Amazon IAP (no official Flutter plugin → platform channel) or `in_app_purchase` + Google Play Billing.
+3. Replace TODO methods in [`lib/services/iap_service.dart`](../../../lib/services/iap_service.dart) — keep public API stable so UI doesn't change.
+4. Add `android.permission.INTERNET` to release manifest (issue #3) for store SDK network calls.
+5. Flip `kEnableMockPurchases = true` (or replace with build-flavor check).
 
 ---
 

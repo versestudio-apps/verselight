@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../utils/constants.dart';
 import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import 'devotional_image.dart';
@@ -35,6 +36,8 @@ class VerseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final showPremiumBadge =
+        isPremium && AppConstants.kEnableMockPurchases;
 
     return Material(
       color: Colors.transparent,
@@ -62,9 +65,9 @@ class VerseCard extends StatelessWidget {
                   ),
                   // Pills sit on the banner, so darken slightly more than
                   // a plain image so the pill chrome stays legible.
-                  darken: (isCompleted || isPremium) ? 0.22 : 0.12,
+                  darken: (isCompleted || showPremiumBadge) ? 0.22 : 0.12,
                   semanticLabel: title ?? verseRef,
-                  overlay: (isCompleted || isPremium)
+                  overlay: (isCompleted || showPremiumBadge)
                       ? Padding(
                           padding: const EdgeInsets.all(12),
                           child: Align(

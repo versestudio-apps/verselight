@@ -25,15 +25,19 @@ class SettingsScreen extends StatelessWidget {
           final entitlement = appState.premiumEntitlement;
           final isPremium = entitlement.isActive;
 
+          final showIapUi = AppConstants.kEnableMockPurchases;
+
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
             children: [
-              _PremiumStatusCard(
-                isPremium: isPremium,
-                entitlement: entitlement,
-                onUpgrade: () => AppRoutes.openPaywall(context),
-              ),
-              const SizedBox(height: 22),
+              if (showIapUi) ...[
+                _PremiumStatusCard(
+                  isPremium: isPremium,
+                  entitlement: entitlement,
+                  onUpgrade: () => AppRoutes.openPaywall(context),
+                ),
+                const SizedBox(height: 22),
+              ],
               const _SectionLabel('App'),
               _SettingsTile(
                 icon: Icons.notifications_outlined,
@@ -46,13 +50,14 @@ class SettingsScreen extends StatelessWidget {
                   activeThumbColor: AppColors.warmGold,
                 ),
               ),
-              _SettingsTile(
-                icon: Icons.restore_rounded,
-                color: AppColors.sageGreen,
-                title: 'Restore purchases',
-                subtitle: 'Beta mock — checks saved entitlement',
-                onTap: () => _restorePurchases(context),
-              ),
+              if (showIapUi)
+                _SettingsTile(
+                  icon: Icons.restore_rounded,
+                  color: AppColors.sageGreen,
+                  title: 'Restore purchases',
+                  subtitle: 'Beta mock — checks saved entitlement',
+                  onTap: () => _restorePurchases(context),
+                ),
               const SizedBox(height: 18),
               const _SectionLabel('Support'),
               _SettingsTile(

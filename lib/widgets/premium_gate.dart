@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../utils/constants.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
 import 'app_state_scope.dart';
@@ -18,6 +19,9 @@ class PremiumGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // While real IAP isn't wired, never block content behind the gate.
+    if (!AppConstants.kEnableMockPurchases) return child;
+
     final appState = AppStateScope.of(context);
 
     return ListenableBuilder(

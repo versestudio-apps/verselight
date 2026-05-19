@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/subscription_product.dart';
 import '../services/iap_service.dart';
+import '../utils/constants.dart';
 import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import '../widgets/app_state_scope.dart';
@@ -50,7 +51,9 @@ class _PaywallScreenState extends State<PaywallScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProducts();
+    if (AppConstants.kEnableMockPurchases) {
+      _loadProducts();
+    }
   }
 
   Future<void> _loadProducts() async {
@@ -106,6 +109,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final showPurchaseUi = AppConstants.kEnableMockPurchases;
 
     return Scaffold(
       appBar: AppBar(
@@ -115,7 +119,8 @@ class _PaywallScreenState extends State<PaywallScreen> {
         ),
         title: const Text('VerseLight Premium'),
         actions: [
-          TextButton(onPressed: _restore, child: const Text('Restore')),
+          if (showPurchaseUi)
+            TextButton(onPressed: _restore, child: const Text('Restore')),
         ],
       ),
       body: ListView(
@@ -131,7 +136,9 @@ class _PaywallScreenState extends State<PaywallScreen> {
                 border: Border.all(color: AppColors.border),
               ),
               child: Text(
-                'BETA · mock billing only',
+                showPurchaseUi
+                    ? 'BETA · mock billing only'
+                    : 'COMING SOON',
                 style: theme.textTheme.labelMedium?.copyWith(
                   fontSize: 11,
                   color: AppColors.slate,
@@ -232,38 +239,49 @@ class _PaywallScreenState extends State<PaywallScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          ..._products.map((product) {
-            final selected = product.id == _selectedProductId;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _ProductCard(
-                product: product,
-                selected: selected,
-                onTap: () => setState(() => _selectedProductId = product.id),
-              ),
-            );
-          }),
-          const SizedBox(height: 10),
-          FilledButton(
-            onPressed: _loading ? null : _subscribe,
-            child: _loading
-                ? const SizedBox(
-                    height: 22,
-                    width: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : Text('Continue with ${_selectedProduct.title} (mock)'),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            'No real charge in this beta. Google Play and Amazon Appstore billing '
-            'will be enabled before public release.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall,
-          ),
+          if (showPurchaseUi) ...[
+            ..._products.map((product) {
+              final selected = product.id == _selectedProductId;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _ProductCard(
+                  product: product,
+                  selected: selected,
+                  onTap: () =>
+                      setState(() => _selectedProductId = product.id),
+                ),
+              );
+            }),
+            const SizedBox(height: 10),
+            FilledButton(
+              onPressed: _loading ? null : _subscribe,
+              child: _loading
+                  ? const SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Text('Continue with ${_selectedProduct.title} (mock)'),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'No real charge in this beta. Google Play and Amazon Appstore '
+              'billing will be enabled before public release.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall,
+            ),
+          ] else ...[
+            Text(
+              'Premium features and subscription will be available in a '
+              'future update — every devotional, plan, and audio piece you '
+              'see today is already yours to use, free of charge.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
+          ],
         ],
       ),
     );

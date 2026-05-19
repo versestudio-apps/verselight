@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/sample_devotionals.dart';
 import '../models/devotional.dart';
+import '../utils/constants.dart';
 import '../utils/devotional_images.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
@@ -27,11 +28,12 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('VerseLight'),
         actions: [
-          IconButton(
-            tooltip: 'Premium',
-            icon: const Icon(Icons.auto_awesome_outlined),
-            onPressed: () => AppRoutes.openPaywall(context),
-          ),
+          if (AppConstants.kEnableMockPurchases)
+            IconButton(
+              tooltip: 'Premium',
+              icon: const Icon(Icons.auto_awesome_outlined),
+              onPressed: () => AppRoutes.openPaywall(context),
+            ),
           IconButton(
             tooltip: 'Settings',
             icon: const Icon(Icons.tune_rounded),
@@ -125,7 +127,8 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 30),
-              if (!appState.isPremium) ...[
+              if (AppConstants.kEnableMockPurchases &&
+                  !appState.isPremium) ...[
                 _GentlePremiumCta(
                   onTap: () => AppRoutes.openPaywall(context),
                 ),

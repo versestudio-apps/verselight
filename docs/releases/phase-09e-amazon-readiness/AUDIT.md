@@ -9,7 +9,7 @@
 |-----------------------------------------|------------------------------------|
 | Beta APK sẵn sàng gửi tester nội bộ     | ✅ **READY** (Phase 09G signed APK preferred over Phase 09D debug-signed) |
 | Signed APK pipeline                     | ✅ **DONE** in Phase 09G (real upload keystore) — see [`../phase-09g-signed-apk/RELEASE_NOTES.md`](../phase-09g-signed-apk/RELEASE_NOTES.md) |
-| APK này sẵn sàng upload Amazon production | ❌ **NOT YET** — signing resolved; mock IAP still blocks store submission |
+| APK này sẵn sàng upload Amazon production | ⚠️ **STORE-SUBMITTABLE PIPELINE** — signing resolved (09F+G), IAP risk neutralized (09H); real billing still TODO before public launch |
 | Tester docs sẵn sàng                    | ✅ READY (đã fix minSdk inaccuracy) |
 | Beta-blocker bugs                       | ❌ Không phát hiện                  |
 | Store-blocker items                     | ⚠️ Có (xem `KNOWN_ISSUES.md`)      |

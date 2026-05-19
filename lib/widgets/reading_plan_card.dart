@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/reading_plan.dart';
+import '../utils/constants.dart';
 import '../utils/devotional_images.dart';
 import '../utils/theme.dart';
 import 'devotional_image.dart';
@@ -35,6 +36,8 @@ class ReadingPlanCard extends StatelessWidget {
             : 0.0);
 
     final imagePath = DevotionalImages.forPlanId(plan.id);
+    final showPremiumBadge =
+        plan.isPremium && AppConstants.kEnableMockPurchases;
 
     return Material(
       color: Colors.transparent,
@@ -59,9 +62,9 @@ class ReadingPlanCard extends StatelessWidget {
                   topLeft: Radius.circular(AppRadii.card),
                   topRight: Radius.circular(AppRadii.card),
                 ),
-                darken: plan.isPremium ? 0.22 : 0.12,
+                darken: showPremiumBadge ? 0.22 : 0.12,
                 semanticLabel: plan.title,
-                overlay: plan.isPremium
+                overlay: showPremiumBadge
                     ? const Padding(
                         padding: EdgeInsets.all(12),
                         child: Align(

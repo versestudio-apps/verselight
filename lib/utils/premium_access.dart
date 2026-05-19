@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/premium_entitlement.dart';
 import '../services/iap_service.dart';
+import 'constants.dart';
 import 'routes.dart';
 import '../widgets/app_state_scope.dart';
 
@@ -13,6 +14,7 @@ class PremiumAccess {
     required bool contentIsPremium,
     PremiumEntitlement? entitlement,
   }) {
+    if (!AppConstants.kEnableMockPurchases) return true;
     if (!contentIsPremium) return true;
     final active = entitlement ?? IapService.instance.getCurrentEntitlement();
     return active.isActive;
@@ -22,6 +24,7 @@ class PremiumAccess {
     BuildContext context, {
     required bool contentIsPremium,
   }) {
+    if (!AppConstants.kEnableMockPurchases) return true;
     if (!contentIsPremium) return true;
     return AppStateScope.of(context).isPremium;
   }
@@ -31,6 +34,7 @@ class PremiumAccess {
     BuildContext context, {
     required bool contentIsPremium,
   }) {
+    if (!AppConstants.kEnableMockPurchases) return true;
     if (hasAccessFromAppState(context, contentIsPremium: contentIsPremium)) {
       return true;
     }

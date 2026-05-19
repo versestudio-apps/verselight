@@ -88,7 +88,7 @@ class AudioScreen extends StatelessWidget {
     if (!isSame) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Playing (mock): ${track.title}'),
+          content: Text('Playing: ${track.title}'),
           duration: const Duration(seconds: 2),
         ),
       );

@@ -18,6 +18,23 @@ class AppConstants {
   static const String skuPremiumMonthly = 'verselight_premium_monthly';
   static const String skuPremiumYearly = 'verselight_premium_yearly';
 
+  /// Master switch for the in-app purchase surface.
+  ///
+  /// When false (current default — Phase 09H):
+  ///   - No Subscribe / Restore buttons are shown anywhere.
+  ///   - No price labels are displayed.
+  ///   - No "(mock)" / "(beta)" purchase copy is shown.
+  ///   - The paywall shows a "Premium coming soon" teaser only.
+  ///   - `PremiumAccess` / `PremiumGate` allow access to all content,
+  ///     so users can use the full app while real billing isn't wired.
+  ///
+  /// When wiring real Amazon IAP / Google Play Billing in a later phase,
+  /// either flip this to true and add the real SDK calls inside
+  /// `IapService`, or replace this constant with a build-flavor check.
+  /// All UI sites that branch on this flag can be found with
+  /// `grep kEnableMockPurchases lib/`.
+  static const bool kEnableMockPurchases = false;
+
   // TODO(store-ready): replace placeholder URLs/email with final values before
   // submitting to Google Play / Amazon Appstore.
   static const String privacyUrl =

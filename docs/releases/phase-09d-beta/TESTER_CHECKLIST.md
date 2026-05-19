@@ -5,7 +5,7 @@ Cảm ơn bạn đã giúp test bản beta VerseLight. Vui lòng làm theo các 
 - **File APK:** `VerseLight-v1.0.0-beta-android.apk`
 - **SHA256:** `33450A323568DB86CD80B7D05BC3E8D20644E2022D6C1D56A64AFAFDCAF07214`
 - **Build type:** Android release APK (chưa publish Store)
-- **Yêu cầu:** Android 8.0 (API 26) trở lên
+- **Yêu cầu:** Android 7.0 (API 24) trở lên
 
 ---
 

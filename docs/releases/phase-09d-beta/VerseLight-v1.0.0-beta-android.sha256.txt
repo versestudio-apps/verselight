@@ -1,0 +1,18 @@
+VerseLight beta APK — SHA256
+=============================
+
+filename:       VerseLight-v1.0.0-beta-android.apk
+size_bytes:     53979781
+sha256:         33450A323568DB86CD80B7D05BC3E8D20644E2022D6C1D56A64AFAFDCAF07214
+generated:      2026-05-19 13:32:30 +07:00
+source_commit:  74648e79c1aecf7ff8495dc77a0d626e586034a3 (main)
+build_type:     Android release APK (flutter build apk --release)
+flutter:        3.35.3 stable (Dart 3.9.2)
+pubspec_version: 1.0.0+1
+applicationId:  com.versestudio.verselight
+
+Verify on receiver side (Windows PowerShell):
+  Get-FileHash .\VerseLight-v1.0.0-beta-android.apk -Algorithm SHA256
+
+Verify on macOS / Linux:
+  shasum -a 256 VerseLight-v1.0.0-beta-android.apk

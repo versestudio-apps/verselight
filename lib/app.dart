@@ -6,6 +6,7 @@ import 'utils/routes.dart';
 import 'utils/theme.dart';
 import 'widgets/app_state_scope.dart';
 import 'widgets/bottom_nav_shell.dart';
+import 'widgets/brand_splash.dart';
 
 class VerseLightApp extends StatefulWidget {
   const VerseLightApp({super.key});
@@ -46,9 +47,7 @@ class _VerseLightAppState extends State<VerseLightApp> {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
+        home: const BrandSplash(),
       );
     }
 

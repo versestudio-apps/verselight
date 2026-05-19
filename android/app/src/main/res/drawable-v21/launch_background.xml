@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- VerseLight launch background (API 21+). Brand cream matches the app's
-     scaffoldBackgroundColor for a seamless transition into the Flutter UI. -->
+<!-- VerseLight launch background (API 21+). Cream base matches the app's
+     scaffoldBackgroundColor for a seamless transition into the Flutter UI.
+     Centered brand symbol reuses the launcher foreground (no extra assets). -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/brand_cream" />
-
-    <!-- TODO(phase-07+): centered brand wordmark/symbol once assets exist. -->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_launcher_foreground" />
+    </item>
 </layer-list>

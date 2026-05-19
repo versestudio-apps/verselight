@@ -7,4 +7,5 @@
     <color name="brand_warm_gold">#C9A45C</color>
     <!-- Legacy alias used by launch_background.xml + styles.xml -->
     <color name="brand_cream">#FAF7F0</color>
+    <color name="ic_launcher_background">#FAF7F0</color>
 </resources>

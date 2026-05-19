@@ -14,6 +14,7 @@ class DevotionalImage extends StatelessWidget {
     this.height,
     this.width,
     this.fit = BoxFit.cover,
+    this.alignment = Alignment.center,
     this.borderRadius,
     this.fallbackIcon = Icons.auto_stories_rounded,
     this.overlay,
@@ -25,6 +26,12 @@ class DevotionalImage extends StatelessWidget {
   final double? height;
   final double? width;
   final BoxFit fit;
+
+  /// Anchor when [fit] is `BoxFit.cover` and the source aspect ratio
+  /// doesn't match the slot. Defaults to center; use
+  /// `Alignment.topCenter` when rendering a portrait (3:4) into a wider
+  /// slot so faces / heads aren't cropped from the top.
+  final Alignment alignment;
   final BorderRadius? borderRadius;
 
   /// Drawn over the bottom of the image (e.g. text on a hero).
@@ -43,6 +50,7 @@ class DevotionalImage extends StatelessWidget {
       height: height,
       width: width,
       fit: fit,
+      alignment: alignment,
       semanticLabel: semanticLabel,
       errorBuilder: (context, error, stack) => _Fallback(
         height: height,
@@ -107,6 +115,7 @@ class DevotionalHeroImage extends StatelessWidget {
     super.key,
     required this.assetPath,
     this.aspectRatio = 16 / 9,
+    this.alignment = Alignment.center,
     this.borderRadius,
     this.overlay,
     this.darken = 0.18,
@@ -115,6 +124,10 @@ class DevotionalHeroImage extends StatelessWidget {
 
   final String assetPath;
   final double aspectRatio;
+
+  /// Cover-fit alignment — pass `Alignment.topCenter` when feeding a
+  /// portrait into a 16:9 hero so faces aren't cropped from the top.
+  final Alignment alignment;
   final BorderRadius? borderRadius;
 
   /// Optional widget drawn on top (e.g. title + verse).
@@ -132,6 +145,7 @@ class DevotionalHeroImage extends StatelessWidget {
       child: DevotionalImage(
         assetPath: assetPath,
         fit: BoxFit.cover,
+        alignment: alignment,
         borderRadius: radius,
         semanticLabel: semanticLabel,
         overlay: Stack(

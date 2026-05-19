@@ -1,3 +1,5 @@
+import 'package:flutter/painting.dart' show Alignment;
+
 /// Central registry of AI-generated devotional artwork paths.
 ///
 /// All artwork lives in `assets/images/devotional/` as WebP (q85, encoded
@@ -41,6 +43,29 @@ class DevotionalImages {
   static const String saintFrancis = '${_base}saint_francis.webp';
   static const String saintTherese = '${_base}saint_therese.webp';
   static const String saintMichael = '${_base}saint_michael.webp';
+
+  static const Set<String> _portraits = {
+    catholicShepherd,
+    josephFamily,
+    saintFrancis,
+    saintTherese,
+    saintMichael,
+  };
+
+  /// True if [path] is a known portrait (3:4) master.
+  ///
+  /// The `for*` helpers below intentionally avoid routing portraits into
+  /// 16:9 hero / detail / header slots — but a portrait *can* still legally
+  /// flow into a square slot (e.g. audio artwork). UI widgets that render
+  /// portraits in non-portrait frames should pass `Alignment.topCenter` to
+  /// `DevotionalImage` so the subject's head/face stays in view.
+  static bool isPortrait(String path) => _portraits.contains(path);
+
+  /// Sensible default alignment for [DevotionalImage] when using
+  /// `BoxFit.cover`. Portraits anchor to top-center (head/face preserved);
+  /// landscapes center as usual.
+  static Alignment alignmentFor(String path) =>
+      isPortrait(path) ? Alignment.topCenter : Alignment.center;
 
   // Landscape masters (16:9). Use for hero / detail / plan-header slots.
   static const String catholicShepherdLandscape =

@@ -11,29 +11,17 @@
 
 ---
 
-## 1. 🔴 APK ký bằng debug keystore
+## 1. ✅ ~~🔴 APK ký bằng debug keystore~~ — RESOLVED (Phase 09F + 09G)
 
-**Nơi:** [android/app/build.gradle.kts:36-42](../../../android/app/build.gradle.kts#L36-L42)
+**Status:** Source config resolved by Phase 09F; first real signed APK produced by Phase 09G.
 
-```kotlin
-buildTypes {
-    release {
-        // TODO: Add your own signing config for the release build.
-        // Signing with the debug keys for now, so `flutter run --release` works.
-        signingConfig = signingConfigs.getByName("debug")
-    }
-}
-```
+- Phase 09F (commit `a07dbf1`): [android/app/build.gradle.kts](../../../android/app/build.gradle.kts) load `android/key.properties` (gitignored) khi tồn tại và dùng release signing; fallback debug khi vắng file (chỉ cho local dev).
+- Phase 09G: Generated VerseLight upload keystore (lưu OUTSIDE repo tại `%USERPROFILE%\.android\verselight-upload-key.jks`), populated local `android/key.properties`, built signed APK with cert
+  - DN: `CN=VerseLight, OU=Mobile, O=Verse Studio, L=Bien Hoa, ST=Dong Nai, C=VN`
+  - SHA-256: `2abe1d8694aedc71bd83fbe44d33e3c5ef172380a71ac0b98b45468da98cf96c`
+  - Artifact: [`docs/releases/phase-09g-signed-apk/`](../phase-09g-signed-apk/) (APK gitignored, metadata committed)
 
-**Implication:**
-- APK hiện tại OK cho sideload tester (Android cho phép cài app debug-signed nếu bật "Cài đặt từ nguồn không xác định").
-- KHÔNG dùng được để upload Amazon Appstore — Amazon yêu cầu release-signed APK với cert ổn định.
-
-**Fix (Phase 09F):**
-1. Generate upload keystore (`keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 9125 -alias verselight`).
-2. Lưu keystore + password vào `android/key.properties` (gitignored).
-3. Cập nhật `build.gradle.kts`: load `key.properties`, define `signingConfigs { create("release") { ... } }`, gán cho `buildTypes.release`.
-4. Rebuild APK → SHA256 mới → tạo Phase 09F release artifact.
+Keystore + password remain local only, never committed. See [Phase 09G RELEASE_NOTES](../phase-09g-signed-apk/RELEASE_NOTES.md).
 
 ---
 

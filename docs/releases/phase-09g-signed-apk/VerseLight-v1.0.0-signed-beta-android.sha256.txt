@@ -1,0 +1,37 @@
+VerseLight signed-beta APK — SHA256 + signing metadata
+=======================================================
+
+filename:        VerseLight-v1.0.0-signed-beta-android.apk
+size_bytes:      53979781
+sha256:          0FE1A808FD74D6ACC7EBF1C510C47A3EDBEA543A15A50B46229201849BFFA041
+generated:       2026-05-19 21:58:23 +07:00
+source_commit:   a07dbf17fb3358606dea740277a5e8f18a44d7fa (branch main, pre-Phase-09G commit)
+build_type:      Android release APK (flutter build apk --release)
+signing_status:  release / upload-key signed (NOT debug)
+pubspec_version: 1.0.0+1  →  versionName=1.0.0, versionCode=1
+applicationId:   com.versestudio.verselight
+flutter:         3.35.3 stable (Dart 3.9.2)
+
+Certificate (from `apksigner verify --print-certs`):
+  Signer #1 DN:         CN=VerseLight, OU=Mobile, O=Verse Studio, L=Bien Hoa, ST=Dong Nai, C=VN
+  Signer #1 SHA-256:    2abe1d8694aedc71bd83fbe44d33e3c5ef172380a71ac0b98b45468da98cf96c
+  Signer #1 SHA-1:      9a1a8a4b6302d15b8fb06ec2fd4ebd9fea8c648f
+  Signer #1 MD5:        e9337726bba2cf62ab1d2c6eb65b19de
+
+Note:
+  - APK binary is gitignored (`docs/releases/**/*.apk`); not committed.
+  - This file (the .sha256.txt metadata) IS committed for verification.
+  - Cert SHA-256 / SHA-1 fingerprints will be needed by Amazon Appstore
+    console and any cert-pinning systems — keep them somewhere stable
+    (this file + RELEASE_NOTES.md).
+
+Verify APK integrity on the receiver side:
+
+Windows PowerShell:
+  Get-FileHash .\VerseLight-v1.0.0-signed-beta-android.apk -Algorithm SHA256
+
+macOS / Linux:
+  shasum -a 256 VerseLight-v1.0.0-signed-beta-android.apk
+
+Verify APK signature (Android SDK build-tools required):
+  apksigner verify --print-certs VerseLight-v1.0.0-signed-beta-android.apk

@@ -7,8 +7,9 @@
 
 | Hạng mục                                | Trạng thái                         |
 |-----------------------------------------|------------------------------------|
-| Beta APK sẵn sàng gửi tester nội bộ     | ✅ **READY**                        |
-| APK này sẵn sàng upload Amazon production | ❌ **NOT READY** (debug signed)    |
+| Beta APK sẵn sàng gửi tester nội bộ     | ✅ **READY** (Phase 09G signed APK preferred over Phase 09D debug-signed) |
+| Signed APK pipeline                     | ✅ **DONE** in Phase 09G (real upload keystore) — see [`../phase-09g-signed-apk/RELEASE_NOTES.md`](../phase-09g-signed-apk/RELEASE_NOTES.md) |
+| APK này sẵn sàng upload Amazon production | ❌ **NOT YET** — signing resolved; mock IAP still blocks store submission |
 | Tester docs sẵn sàng                    | ✅ READY (đã fix minSdk inaccuracy) |
 | Beta-blocker bugs                       | ❌ Không phát hiện                  |
 | Store-blocker items                     | ⚠️ Có (xem `KNOWN_ISSUES.md`)      |
@@ -56,15 +57,17 @@
 
 → Privacy footprint cực thấp. Tốt cho Amazon submission (ít câu hỏi về data collection).
 
-### Signing
+### Signing — RESOLVED (Phase 09F + 09G)
 
 | Item                  | Value                                       | Status |
 |-----------------------|---------------------------------------------|--------|
-| Release signing config | `signingConfigs.getByName("debug")` ([android/app/build.gradle.kts:40](../../../android/app/build.gradle.kts#L40)) | ❌ Debug |
-| `key.properties`      | Không tồn tại                                | ❌      |
-| Release keystore (`*.jks`, `*.keystore`) | Không tồn tại trong `android/` | ❌      |
+| Release signing config | Conditional: load `android/key.properties` if present, fallback debug ([android/app/build.gradle.kts](../../../android/app/build.gradle.kts)) | ✅ Phase 09F |
+| `android/key.properties` | Exists locally, gitignored                | ✅ Phase 09G |
+| Upload keystore       | Generated, stored at `%USERPROFILE%\.android\verselight-upload-key.jks` (OUTSIDE repo) | ✅ Phase 09G |
+| Signed APK produced   | [`docs/releases/phase-09g-signed-apk/`](../phase-09g-signed-apk/) (binary gitignored, metadata committed) | ✅ Phase 09G |
+| Cert SHA-256          | `2abe1d8694aedc71bd83fbe44d33e3c5ef172380a71ac0b98b45468da98cf96c` | ✅ verified by `apksigner` |
 
-→ **APK hiện tại ký bằng Android debug keystore.** OK cho sideload tester nội bộ; KHÔNG được dùng để upload Amazon Appstore.
+→ Signing blocker resolved. APK now eligible for Amazon Appstore upload from a signing standpoint; remaining blocker is IAP (see [`KNOWN_ISSUES.md` #2](KNOWN_ISSUES.md)).
 
 ### Branding assets
 

@@ -1,7 +1,11 @@
-# VerseLight — Known Issues / Limitations (Phase 09E)
+# VerseLight — Known Issues / Limitations (Phase 09E, updated through 09K)
 
-> Snapshot rủi ro/limit tại commit `739e53b`. KHÔNG phải bug blocker tester nội bộ;
-> phần lớn là store-readiness items cần xử lý trước khi upload Amazon Appstore.
+> Snapshot rủi ro/limit khởi tạo tại commit `739e53b`. Phase 09F–09K cập nhật
+> trực tiếp tài liệu này. KHÔNG phải bug blocker tester nội bộ; phần lớn là
+> store-readiness items cần xử lý trước khi upload Amazon Appstore.
+>
+> Phase trail: 09E baseline → 09F+09G signing → 09H IAP gating → 09I Firebase/network →
+> 09J Audio tab gating → 09K Store listing + privacy URL audit (THIS).
 
 ## Severity legend
 
@@ -89,41 +93,94 @@ Full rationale + re-enable checklist in [`../phase-09j-audio-mock-decision/AUDIT
 
 ---
 
-## 6. 🟢 Affiliate banner là external link
+## 6. 🟡 Affiliate banner là external link + tracking tag placeholder
 
-**Nơi:** [lib/widgets/affiliate_banner.dart](../../../lib/widgets/affiliate_banner.dart) — dùng `url_launcher` để mở Amazon ASIN/Audible URL trong browser external.
+**Nơi:** [lib/widgets/affiliate_banner.dart](../../../lib/widgets/affiliate_banner.dart) — dùng `url_launcher` để mở Amazon ASIN/Audible URL trong browser external. Tag từ [`AppConstants.amazonTrackingId`](../../../lib/utils/constants.dart) = `verselight-placeholder-20`.
 
 **Implication:**
 - ✅ Không vi phạm Amazon Appstore policy (mở external Amazon là welcome).
-- ⚠️ Cần đảm bảo affiliate tag (Amazon Associates ID) hợp lệ và disclosure phù hợp luật quảng cáo địa phương (FTC cho US, EU rules cho EU).
+- ✅ Phase 09K xác nhận disclosure UI đã có (Shop screen + Settings footer: "As an Amazon Associate we earn from qualifying purchases.") — đáp ứng baseline FTC US / EU rules.
+- ⚠️ Tracking tag vẫn là placeholder — links mở Amazon OK, KHÔNG award commission cho tới khi Amazon Associates approval xong và tag thật được wire.
 
-**Fix:** review affiliate disclosure khi chuẩn bị store listing (Phase 09K).
+**Còn lại trước store submit:**
+1. Đăng ký Amazon Associates → khi duyệt, thay `verselight-placeholder-20` bằng tag thật.
+2. (Optional) Review disclosure copy có cần đậm hơn cho EU không (Phase 09K không phát hiện vi phạm).
 
 ---
 
-## 7. 🟢 Content review — Catholic devotional wording
+## 7. 🟡 Content review — Catholic devotional wording + Bible translation license
 
 **Nơi:** [lib/data/sample_devotionals.dart](../../../lib/data/sample_devotionals.dart), [lib/data/sample_plans.dart](../../../lib/data/sample_plans.dart) (nếu có), assets `assets/images/devotional/`.
+
+**Status:** Phase 09K **chưa resolve** — vẫn open. Phase 09K là audit URL/listing assets, không review nội dung verse-by-verse.
 
 **Implication:**
 - Amazon Appstore content policy cho Religion/Spirituality category: chấp nhận, nhưng cần:
   - Không xúc phạm bất kỳ tôn giáo nào khác.
   - Không claim chữa bệnh / phép màu / lời khuyên y tế.
-  - Bible verses dùng public-domain translation (KJV) hoặc license phù hợp (NIV/ESV cần permission).
+  - Bible verses dùng public-domain translation (KJV / Douay-Rheims) hoặc license phù hợp (NIV/ESV/NABRE/RSV cần permission).
 - Tab Shop affiliate dẫn về Amazon book listings → đảm bảo các ASIN trỏ đúng và còn hợp lệ.
 
-**Fix:** review nội dung devotional content + verse translation license trước Phase 09K (store listing).
+**Fix:** review nội dung devotional content + verse translation license trước khi flip Amazon Appstore production submit. Owner deliverable — không thể audit từ code đơn thuần.
 
 ---
 
-## 8. 🟢 versionCode = 1, chưa có bump strategy
+## 8. 🟡 versionCode = 1, chưa có bump strategy
 
 **Nơi:** pubspec `version: 1.0.0+1`.
 
+**Status:** Phase 09K vẫn để mở (audit thuần — không bump version).
+
 **Implication:**
 - versionCode=1 là OK cho beta đầu tiên.
-- Trước Phase 09F (release signing) hoặc 09K (store upload), nên định strategy bump:
+- Trước khi submit Amazon Appstore (Phase 09L hoặc tương đương), phải định strategy bump:
   - Ví dụ: `1.0.0+10` cho beta1, `1.0.0+11` cho beta2, `1.0.0+100` cho store v1.0.0 production.
-  - Hoặc dùng date-based: `1.0.0+202605191` (YYYYMMDDN).
+  - Hoặc dùng date-based: `1.0.0+202605231` (YYYYMMDDN).
 
-**Fix:** chốt versioning convention trong phase tiếp theo, không gấp.
+**Fix:** chốt versioning convention trước phase landing-store-deliverables.
+
+---
+
+## 9. 🟡 Privacy / Terms / Help URLs + support email là placeholders
+
+**Phase tracked:** [Phase 09K AUDIT](../phase-09k-store-listing-privacy/AUDIT.md).
+
+**Status:** Phase 09K audit-only — KHÔNG flip URL/email trong code, vì không có URL "đúng hơn" để wire vào và không xác minh được URL hiện tại có nội dung Amazon yêu cầu hay không.
+
+**Snapshot tại Phase 09K** ([lib/utils/constants.dart](../../../lib/utils/constants.dart) dòng 53-61):
+
+| Const           | Value hiện tại                                          | Type        |
+|-----------------|---------------------------------------------------------|-------------|
+| `privacyUrl`    | `https://versestudio-apps.github.io/privacy/`           | Placeholder (per TODO comment) |
+| `termsUrl`      | `https://versestudio-apps.github.io/privacy/`           | Placeholder (= privacyUrl)     |
+| `helpUrl`       | `https://versestudio-apps.github.io/privacy/#help`      | Placeholder                    |
+| `supportEmail`  | `support@example.com`                                   | RFC 2606 reserved — chắc chắn placeholder |
+
+**Owner action trước khi submit Amazon:**
+1. Publish / xác minh real Privacy Policy URL, đáp ứng yêu cầu Amazon.
+2. Publish Terms URL **riêng** (không trùng privacy).
+3. Publish Help / FAQ URL, hoặc gỡ Help tile khỏi Settings nếu không có.
+4. Cung cấp support email thật, KHÔNG dùng `example.com`.
+5. Wire 4 giá trị mới vào `AppConstants` trong 1 commit; cùng commit gỡ subtitle "Placeholder — update before launch" trên Terms tile ở [lib/screens/settings_screen.dart](../../../lib/screens/settings_screen.dart) dòng 101.
+
+---
+
+## 10. 🟡 Store listing assets + copy chưa làm
+
+**Phase tracked:** [Phase 09K AUDIT](../phase-09k-store-listing-privacy/AUDIT.md) §2-§3.
+
+**Status:** Branding internals OK (launcher icon, splash, devotional artwork). Store-facing listing assets chưa làm.
+
+**Còn lại:**
+- 512×512 PNG icon export (cho store listing slot).
+- 1024×500 feature graphic / small banner.
+- 1920×1080 promo image (optional, Amazon featured).
+- ≥3 phone screenshots (Pixel 6 API 34, 1080×2400) — Audio tab ĐÃ ẨN ở Phase 09J nên skip route #5 trong checklist cũ [README §9](../../../README.md).
+- ≥3 Fire HD 8 screenshots (800×1280).
+- Optional: Fire HD 10 (1200×1920).
+- Short description (≤80 ký tự).
+- Long description (≤4000 ký tự).
+- Content rating / IARC questionnaire.
+- Data safety questionnaire (Phase 09K xác nhận: no PII / no ads / no analytics — vẫn đúng).
+
+**Fix:** Owner deliverable, không thể produce từ code thuần. Phase tiếp theo (Phase 09L gợi ý) sẽ land các artifact này.

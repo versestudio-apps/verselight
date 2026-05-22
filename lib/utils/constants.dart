@@ -18,6 +18,21 @@ class AppConstants {
   static const String skuPremiumMonthly = 'verselight_premium_monthly';
   static const String skuPremiumYearly = 'verselight_premium_yearly';
 
+  /// Master switch for the Audio tab.
+  ///
+  /// When false (Phase 09J default): the Audio tab is removed from the bottom
+  /// navigation and from the Home quick-access grid. The mock `AudioScreen`,
+  /// `sample_audio.dart`, and `AudioTrack` model are intentionally kept in
+  /// the codebase so this flag can flip back when real playback is wired
+  /// (e.g. via `just_audio`) with bundled or streamed audio assets.
+  ///
+  /// When wiring real audio later:
+  ///   1. Add `just_audio` (or `audioplayers`) to pubspec.
+  ///   2. Bundle / stream audio assets for the 4 sample tracks (or replace).
+  ///   3. Replace `_onPlay` in `AudioScreen` to drive the real player.
+  ///   4. Flip this flag to true.
+  static const bool kEnableAudioTab = false;
+
   /// Master switch for the in-app purchase surface.
   ///
   /// When false (current default — Phase 09H):

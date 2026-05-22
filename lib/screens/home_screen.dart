@@ -116,13 +116,22 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _QuickAction(
-                      icon: Icons.headphones_rounded,
-                      color: AppColors.softRose,
-                      label: 'Audio',
-                      subtitle: 'Listen & reflect',
-                      onTap: () => appState.selectTab(4),
-                    ),
+                    child: AppConstants.kEnableAudioTab
+                        ? _QuickAction(
+                            icon: Icons.headphones_rounded,
+                            color: AppColors.softRose,
+                            label: 'Audio',
+                            subtitle: 'Listen & reflect',
+                            onTap: () => appState.selectTab(4),
+                          )
+                        : _QuickAction(
+                            icon: Icons.storefront_rounded,
+                            color: AppColors.softRose,
+                            label: 'Shop',
+                            subtitle: 'Curated resources',
+                            // With Audio hidden, Shop shifts from index 5 to 4.
+                            onTap: () => appState.selectTab(4),
+                          ),
                   ),
                 ],
               ),

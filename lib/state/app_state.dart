@@ -7,6 +7,7 @@ import '../models/premium_entitlement.dart';
 import '../models/prayer_entry.dart';
 import '../services/iap_service.dart';
 import '../services/local_storage_service.dart';
+import '../utils/constants.dart';
 
 /// App session state with Phase 02+ local persistence.
 class AppState extends ChangeNotifier {
@@ -93,7 +94,10 @@ class AppState extends ChangeNotifier {
   }
 
   void selectTab(int index) {
-    if (index < 0 || index > 5) return;
+    // Upper bound shrinks by one when the Audio tab is hidden
+    // (Phase 09J — AppConstants.kEnableAudioTab=false).
+    final maxIndex = AppConstants.kEnableAudioTab ? 5 : 4;
+    if (index < 0 || index > maxIndex) return;
     if (tabIndex == index) return;
     tabIndex = index;
     notifyListeners();

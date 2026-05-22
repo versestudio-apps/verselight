@@ -75,18 +75,17 @@ Full rationale in [`../phase-09i-firebase-network/AUDIT.md`](../phase-09i-fireba
 
 ---
 
-## 5. 🟡 Audio tab là mock UI
+## 5. ✅ ~~🟡 Audio tab là mock UI~~ — RESOLVED (Phase 09J)
 
-**Nơi:** [lib/screens/audio_screen.dart](../../../lib/screens/audio_screen.dart), không có `just_audio` / `audioplayers` / `audio_service` trong pubspec.
+**Status:** Phase 09J gated Audio behind [`AppConstants.kEnableAudioTab`](../../../lib/utils/constants.dart) (default `false`). In the store build:
 
-**Implication:**
-- Tab Audio hiển thị danh sách track + "Now Playing" UI, nhưng nhấn Play KHÔNG phát audio thật (chỉ thay đổi state).
-- Tester `TESTER_CHECKLIST.md` Section H đã ghi rõ "mock playback".
-- Upload store với tab Audio non-functional → khả năng cao bị Amazon reviewer reject vì "advertised feature does not work".
+- Bottom navigation drops the Audio destination — 5 tabs visible (Home · Devotional · Journal · Plans · Shop).
+- [`bottom_nav_shell.dart`](../../../lib/widgets/bottom_nav_shell.dart) removes `AudioScreen` from `IndexedStack` children when the flag is off, so no stale index ever points at it.
+- [Home Quick Access](../../../lib/screens/home_screen.dart) replaces the "Audio · Listen & reflect" tile with "Shop · Curated resources" pointing to the shifted Shop index.
+- [`AppState.selectTab()`](../../../lib/state/app_state.dart) upper bound shrinks from 5 → 4 when the flag is off.
+- `AudioScreen`, `sample_audio.dart`, `AudioTrack` are intentionally kept in the codebase so flipping the flag re-enables the surface in one line. No pubspec dependencies were added or removed.
 
-**Fix (Phase 09J):** chọn 1 trong 2 hướng:
-- **(a) Tạm ẩn tab Audio** trước khi store submit, đưa quay lại sau.
-- **(b) Wire `just_audio`** + bundle vài track audio (hoặc stream URL) + thêm INTERNET permission nếu stream.
+Full rationale + re-enable checklist in [`../phase-09j-audio-mock-decision/AUDIT.md`](../phase-09j-audio-mock-decision/AUDIT.md).
 
 ---
 

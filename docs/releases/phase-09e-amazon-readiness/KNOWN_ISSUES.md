@@ -47,48 +47,31 @@ Keystore + password remain local only, never committed. See [Phase 09G RELEASE_N
 
 ---
 
-## 3. 🟡 `android.permission.INTERNET` thiếu trong release manifest
+## 3. ✅ ~~🟡 `android.permission.INTERNET` thiếu trong release manifest~~ — RESOLVED (Phase 09I)
 
-**Nơi:** merged release manifest tại
-`build/app/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml`
-— chỉ có `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` (signature-level, auto-injected).
+**Status:** Phase 09I added `<uses-permission android:name="android.permission.INTERNET" />` to [android/app/src/main/AndroidManifest.xml](../../../android/app/src/main/AndroidManifest.xml) (with a comment explaining the rationale). Release merged manifest now declares INTERNET at line 18, matching debug/profile builds.
 
-Debug và profile builds có `<uses-permission android:name="android.permission.INTERNET"/>` ở
-[android/app/src/debug/AndroidManifest.xml:6](../../../android/app/src/debug/AndroidManifest.xml#L6)
-và [android/app/src/profile/AndroidManifest.xml:6](../../../android/app/src/profile/AndroidManifest.xml#L6),
-nhưng `main/AndroidManifest.xml` thì không.
-
-**Implication hiện tại (Phase 09E beta):**
-- ✅ `Firebase.initializeApp(...)` trong `main.dart` không gọi network → không crash.
-- ✅ `url_launcher` mở browser/Amazon app external → không cần INTERNET của app này.
-- ✅ Devotional/plan content là static assets → không cần network.
-- → Beta hiện tại **chạy bình thường** không INTERNET.
-
-**Implication tương lai:**
-- ❌ Khi wire Firestore/Auth/Analytics/Crashlytics → tất cả network calls sẽ fail silently trong release build.
-- ❌ Khi wire real IAP store SDK → có thể không refresh được product catalog.
-
-**Fix (cùng Phase 09I khi wire Firebase, hoặc sớm hơn nếu safe):**
-Thêm `<uses-permission android:name="android.permission.INTERNET"/>` vào
-[android/app/src/main/AndroidManifest.xml](../../../android/app/src/main/AndroidManifest.xml)
-(ngoài thẻ `<application>`).
+INTERNET is a normal-category permission (no runtime prompt, no Amazon data-safety implication on its own). App still doesn't make any outbound network calls — this entry just removes the latent "works in dev fails in release" failure mode for the next time Firebase / IAP store SDK / HTTP work is added. See [`../phase-09i-firebase-network/AUDIT.md`](../phase-09i-firebase-network/AUDIT.md).
 
 ---
 
-## 4. 🟡 Firebase initialized but unused
+## 4. ⚠️ ~~🟡 Firebase initialized but unused~~ — DEFERRED (Phase 09I decision)
 
-**Nơi:**
-- [lib/main.dart:10-12](../../../lib/main.dart#L10-L12) — `await Firebase.initializeApp(...)`.
-- [lib/firebase_options.dart](../../../lib/firebase_options.dart) — auto-generated config.
-- `pubspec.yaml`: chỉ có `firebase_core: ^4.9.0`, KHÔNG có `firebase_auth` / `cloud_firestore` / `firebase_analytics` / `firebase_crashlytics`.
+**Decision (Phase 09I):** Keep `firebase_core` init as-is. Don't wire Analytics/Auth/Crashlytics in this phase. Don't rip out either.
 
-**Implication:**
-- Tăng size APK (`google_services.json` + firebase_core native code) mà chưa thu được giá trị nào.
-- Không crash, không leak data → không phải store-blocker.
+**Reasoning:**
+- Setup cost is already sunk (plugin, `google-services.json`, `firebase_options.dart`).
+- Two `lib/services/*.dart` TODO callsites already reference Firebase as the planned backend ([affiliate_service.dart](../../../lib/services/affiliate_service.dart) line 43, [ai_service.dart](../../../lib/services/ai_service.dart) line 6).
+- `Firebase.initializeApp()` without follow-up calls does NOT collect data, does NOT make network calls, does NOT change privacy disclosure requirements.
+- Wiring each Firebase product (Analytics, Crashlytics, Auth, Firestore) is its own decision with its own privacy implications — should be a deliberate phase, not a side-effect of "fix the latent risk".
+- INTERNET permission (issue #3) is now in place, so when Firebase APIs DO get wired, network calls won't silently fail.
 
-**Fix (Phase 09I):** chọn 1 trong 2 hướng:
-- **(a) Gỡ Firebase** nếu phase tiếp theo không có kế hoạch dùng — remove `firebase_core`, `firebase_options.dart`, init call, `google-services.json`, `com.google.gms.google-services` plugin trong gradle.
-- **(b) Wire thật** — thêm Analytics + Crashlytics ít nhất (cần thiết cho production app), đồng thời fix issue #3 (INTERNET permission).
+Full rationale in [`../phase-09i-firebase-network/AUDIT.md`](../phase-09i-firebase-network/AUDIT.md).
+
+**Still to decide before public launch (own future phase):**
+- Add `firebase_crashlytics` for crash reporting? (Recommended before scale.)
+- Add `firebase_analytics` for install/event analytics? (Triggers privacy policy update + Amazon data-safety questionnaire.)
+- Or replace Firebase with Sentry / PostHog / nothing — depends on monitoring strategy.
 
 ---
 

@@ -1,4 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required so Firebase / future Analytics / Crashlytics / IAP store
+         SDKs can reach their backends in release builds. The debug and
+         profile manifests already declare INTERNET; this entry keeps the
+         release merged manifest consistent so network calls don't silently
+         fail in production. INTERNET is a normal (non-runtime) permission
+         and is not user-prompted. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:label="VerseLight"
         android:name="${applicationName}"

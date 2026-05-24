@@ -43,11 +43,28 @@
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
 
-         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
+
+         The https/mailto entries are required by url_launcher on Android 11+
+         (targetSdk >= 30) so that canLaunchUrl() can see the installed browser
+         and mail apps. Without them, Shop affiliate links and Settings legal /
+         support-email taps silently no-op in release builds. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
         </intent>
     </queries>
 </manifest>

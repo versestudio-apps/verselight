@@ -7,7 +7,8 @@
 > Phase trail: 09E baseline → 09F+09G signing → 09H IAP gating → 09I Firebase/network →
 > 09J Audio tab gating → 09K Store listing + privacy URL audit →
 > 09L Bible translation license review →
-> 09M versionCode strategy + Release Candidate checklist (THIS).
+> 09M versionCode strategy + Release Candidate checklist →
+> 09N Amazon store image assets (icons + promo + screenshot plan, THIS).
 
 ## Severity legend
 
@@ -179,15 +180,16 @@ Submission runbook trong [`../phase-09m-versioncode-and-rc-checklist/RC_CHECKLIS
 **Status:** Branding internals OK (launcher icon, splash, devotional artwork). Store-facing listing assets chưa làm.
 
 **Còn lại:**
-- 512×512 PNG icon export (cho store listing slot).
-- 1024×500 feature graphic / small banner.
-- 1920×1080 promo image (optional, Amazon featured).
-- ≥3 phone screenshots (Pixel 6 API 34, 1080×2400) — Audio tab ĐÃ ẨN ở Phase 09J nên skip route #5 trong checklist cũ [README §9](../../../README.md).
-- ≥3 Fire HD 8 screenshots (800×1280).
-- Optional: Fire HD 10 (1200×1920).
-- Short description (≤80 ký tự).
-- Long description (≤4000 ký tự).
-- Content rating / IARC questionnaire.
-- Data safety questionnaire (Phase 09K xác nhận: no PII / no ads / no analytics — vẫn đúng).
+- ✅ 512×512 PNG icon export — DONE Phase 09N ([`../phase-09n-store-image-assets/icons/VerseLight-icon-512.png`](../phase-09n-store-image-assets/icons/VerseLight-icon-512.png)).
+- ✅ 114×114 PNG small icon — DONE Phase 09N ([`../phase-09n-store-image-assets/icons/VerseLight-icon-114.png`](../phase-09n-store-image-assets/icons/VerseLight-icon-114.png)).
+- ✅ 1024×500 small banner — DONE Phase 09N ([`../phase-09n-store-image-assets/promo/VerseLight-promo-1024x500.png`](../phase-09n-store-image-assets/promo/VerseLight-promo-1024x500.png)).
+- 🟡 1920×1080 feature graphic / hero (optional, Amazon featured) — Phase 09N skipped, not blocking.
+- 🟡 ≥3 phone screenshots (Pixel 6 API 34, 1080×2400) — Audio tab ĐÃ ẨN ở Phase 09J nên skip Audio route. Plan: [SCREENSHOTS_PLAN.md](../phase-09n-store-image-assets/SCREENSHOTS_PLAN.md).
+- 🟡 ≥3 Fire HD 8 screenshots (800×1280) — owner capture per [SCREENSHOTS_PLAN.md](../phase-09n-store-image-assets/SCREENSHOTS_PLAN.md).
+- 🟡 Optional: Fire HD 10 (1200×1920).
+- 🟡 Short description (≤80 ký tự).
+- 🟡 Long description (≤4000 ký tự).
+- 🟡 Content rating / IARC questionnaire.
+- 🟡 Data safety questionnaire (Phase 09K xác nhận: no PII / no ads / no analytics — vẫn đúng).
 
-**Fix:** Owner deliverable, không thể produce từ code thuần. Phase tiếp theo (Phase 09L gợi ý) sẽ land các artifact này.
+**Fix:** Icon + banner deliverables done in Phase 09N từ brand master. Screenshots + listing copy vẫn là owner deliverable.

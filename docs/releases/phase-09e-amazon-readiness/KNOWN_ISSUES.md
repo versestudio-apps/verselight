@@ -1,12 +1,13 @@
 # VerseLight — Known Issues / Limitations (Phase 09E, updated through 09K)
 
-> Snapshot rủi ro/limit khởi tạo tại commit `739e53b`. Phase 09F–09K cập nhật
+> Snapshot rủi ro/limit khởi tạo tại commit `739e53b`. Phase 09F–09M cập nhật
 > trực tiếp tài liệu này. KHÔNG phải bug blocker tester nội bộ; phần lớn là
 > store-readiness items cần xử lý trước khi upload Amazon Appstore.
 >
 > Phase trail: 09E baseline → 09F+09G signing → 09H IAP gating → 09I Firebase/network →
 > 09J Audio tab gating → 09K Store listing + privacy URL audit →
-> 09L Bible translation license review (THIS).
+> 09L Bible translation license review →
+> 09M versionCode strategy + Release Candidate checklist (THIS).
 
 ## Severity legend
 
@@ -126,19 +127,24 @@ Full breakdown trong [`../phase-09l-bible-license-review/AUDIT.md`](../phase-09l
 
 ---
 
-## 8. 🟡 versionCode = 1, chưa có bump strategy
+## 8. ✅ ~~🟡 versionCode = 1, chưa có bump strategy~~ — RESOLVED-AS-STRATEGY (Phase 09M)
 
-**Nơi:** pubspec `version: 1.0.0+1`.
+**Status:** Phase 09M chốt strategy + RC checklist. KHÔNG bump pubspec ngay
+(repo HEAD vẫn `1.0.0+1`); bump sẽ áp dụng trong submission commit kế tiếp.
 
-**Status:** Phase 09K vẫn để mở (audit thuần — không bump version).
+**Strategy đã chốt:**
+- `versionName` = SemVer (MAJOR.MINOR.PATCH) theo phạm vi thay đổi user-facing.
+- `versionCode` = monotonic +1 mỗi signed artifact mới (beta sideload HOẶC store upload).
+- Reserved bands: `1` đã burned (09G sideload); `2-9` headroom cho RC builds;
+  `10` cho first Amazon production submission; `20` cho `1.0.1`; `30` cho `1.1.0`.
+- Date-based scheme considered và rejected (overkill cho cadence hiện tại).
 
-**Implication:**
-- versionCode=1 là OK cho beta đầu tiên.
-- Trước khi submit Amazon Appstore (Phase 09L hoặc tương đương), phải định strategy bump:
-  - Ví dụ: `1.0.0+10` cho beta1, `1.0.0+11` cho beta2, `1.0.0+100` cho store v1.0.0 production.
-  - Hoặc dùng date-based: `1.0.0+202605231` (YYYYMMDDN).
+**Submission-day bump:** thay `version: 1.0.0+1` → `version: 1.0.0+10` trong
+[pubspec.yaml](../../../pubspec.yaml) (one-line change) rồi rebuild — không
+cần đụng Gradle hay manifest.
 
-**Fix:** chốt versioning convention trước phase landing-store-deliverables.
+Full rationale + reserved table trong [`../phase-09m-versioncode-and-rc-checklist/AUDIT.md`](../phase-09m-versioncode-and-rc-checklist/AUDIT.md).
+Submission runbook trong [`../phase-09m-versioncode-and-rc-checklist/RC_CHECKLIST.md`](../phase-09m-versioncode-and-rc-checklist/RC_CHECKLIST.md) §C.
 
 ---
 

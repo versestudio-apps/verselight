@@ -80,15 +80,40 @@ class AppConstants {
   /// `grep kEnableMockPurchases lib/`.
   static const bool kEnableMockPurchases = false;
 
-  // TODO(store-ready): replace placeholder URLs/email with final values before
-  // submitting to Google Play / Amazon Appstore.
+  /// Privacy Policy URL — verified live (Phase 09P / 09R) with real content
+  /// (title "Privacy Policy – VerseLight: Daily Devotional", last updated
+  /// May 16 2025). Safe to ship.
   static const String privacyUrl =
       'https://versestudio-apps.github.io/privacy/';
-  static const String termsUrl =
-      'https://versestudio-apps.github.io/privacy/';
-  static const String helpUrl =
-      'https://versestudio-apps.github.io/privacy/#help';
-  static const String supportEmail = 'support@example.com';
+
+  /// Terms of Use URL — placeholder. No standalone Terms page exists yet
+  /// (the privacy URL contains Privacy Policy content only). The Terms tile
+  /// in Settings is gated off behind [kEnableTermsLink] until a real Terms
+  /// page is published. Do NOT point this at [privacyUrl] — that would open
+  /// a Privacy Policy when the user expects Terms.
+  static const String termsUrl = '';
+
+  /// Help / FAQ URL — placeholder. No Help/FAQ page exists yet. The Help
+  /// tile in Settings is gated off behind [kEnableHelpLink] until a real
+  /// page is published. The previous value pointed at `privacyUrl#help`
+  /// but the `#help` anchor does not exist on the Privacy page, so the
+  /// link silently landed on the top of the Privacy Policy.
+  static const String helpUrl = '';
+
+  /// Support contact email — real address operated by VerseStudio.
+  /// Matches the contact email published in the Privacy Policy.
+  static const String supportEmail = 'versestudio.privacy@gmail.com';
+
+  /// Master switch for the Settings → Terms of use tile (Phase 09R).
+  /// Flip to true once a real Terms of Use page is published and
+  /// [termsUrl] is wired with the live URL. While false, the Terms tile
+  /// disappears entirely — better than a tile that opens the wrong page.
+  static const bool kEnableTermsLink = false;
+
+  /// Master switch for the Settings → Help & FAQ tile (Phase 09R).
+  /// Flip to true once a real Help/FAQ page exists and [helpUrl] is
+  /// wired. While false, the Help tile disappears entirely.
+  static const bool kEnableHelpLink = false;
 
   static const int freeDevotionalLimit = 3;
 }

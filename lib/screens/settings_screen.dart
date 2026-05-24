@@ -60,18 +60,21 @@ class SettingsScreen extends StatelessWidget {
                 ),
               const SizedBox(height: 18),
               const _SectionLabel('Support'),
-              _SettingsTile(
-                icon: Icons.help_outline_rounded,
-                color: AppColors.warmGold,
-                title: 'Help & FAQ',
-                subtitle: 'Common questions and how-tos',
-                onTap: () => launchUrl(Uri.parse(AppConstants.helpUrl)),
-                trailing: const Icon(
-                  Icons.open_in_new_rounded,
-                  size: 16,
-                  color: AppColors.slate,
+              // Help tile is gated behind kEnableHelpLink (Phase 09R) —
+              // hidden until a real Help/FAQ page exists. See constants.dart.
+              if (AppConstants.kEnableHelpLink)
+                _SettingsTile(
+                  icon: Icons.help_outline_rounded,
+                  color: AppColors.warmGold,
+                  title: 'Help & FAQ',
+                  subtitle: 'Common questions and how-tos',
+                  onTap: () => launchUrl(Uri.parse(AppConstants.helpUrl)),
+                  trailing: const Icon(
+                    Icons.open_in_new_rounded,
+                    size: 16,
+                    color: AppColors.slate,
+                  ),
                 ),
-              ),
               _SettingsTile(
                 icon: Icons.mail_outline_rounded,
                 color: AppColors.softRose,
@@ -94,18 +97,23 @@ class SettingsScreen extends StatelessWidget {
                   color: AppColors.slate,
                 ),
               ),
-              _SettingsTile(
-                icon: Icons.description_outlined,
-                color: AppColors.deepIndigo,
-                title: 'Terms of use',
-                subtitle: 'Placeholder — update before launch',
-                onTap: () => launchUrl(Uri.parse(AppConstants.termsUrl)),
-                trailing: const Icon(
-                  Icons.open_in_new_rounded,
-                  size: 16,
-                  color: AppColors.slate,
+              // Terms tile is gated behind kEnableTermsLink (Phase 09R) —
+              // hidden until a standalone Terms of Use page exists. The
+              // previous tile opened the Privacy URL with a "Placeholder —
+              // update before launch" subtitle which would confuse a store
+              // reviewer; hiding is safer than mis-routing.
+              if (AppConstants.kEnableTermsLink)
+                _SettingsTile(
+                  icon: Icons.description_outlined,
+                  color: AppColors.deepIndigo,
+                  title: 'Terms of use',
+                  onTap: () => launchUrl(Uri.parse(AppConstants.termsUrl)),
+                  trailing: const Icon(
+                    Icons.open_in_new_rounded,
+                    size: 16,
+                    color: AppColors.slate,
+                  ),
                 ),
-              ),
               const SizedBox(height: 18),
               const _SectionLabel('Data'),
               _SettingsTile(

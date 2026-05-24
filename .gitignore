@@ -59,4 +59,4 @@ key.properties
 *.key
 
 # Local QA screenshots
-qa-screens/
+qa-screens*/

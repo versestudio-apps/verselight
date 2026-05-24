@@ -94,9 +94,13 @@ class AppState extends ChangeNotifier {
   }
 
   void selectTab(int index) {
-    // Upper bound shrinks by one when the Audio tab is hidden
-    // (Phase 09J — AppConstants.kEnableAudioTab=false).
-    final maxIndex = AppConstants.kEnableAudioTab ? 5 : 4;
+    // Bottom-nav tab count is dynamic. Base tabs are Home, Devotional,
+    // Journal, Plans (indices 0..3 = 4 tabs). Audio (Phase 09J) and Shop
+    // (Phase 09Q) each add one tab when their flags are on. Upper bound is
+    // therefore 3 + audio + shop.
+    final maxIndex = 3 +
+        (AppConstants.kEnableAudioTab ? 1 : 0) +
+        (AppConstants.kEnableShopTab ? 1 : 0);
     if (index < 0 || index > maxIndex) return;
     if (tabIndex == index) return;
     tabIndex = index;

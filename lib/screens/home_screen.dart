@@ -116,6 +116,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
+                    // Audio (Phase 09J) → Shop (Phase 09J) → Settings (Phase
+                    // 09Q) fallback chain. The 4th Quick Access slot prefers
+                    // Audio when available; otherwise Shop; otherwise Settings.
+                    // Shop tab index is 4 when Audio is off and Shop is on
+                    // (Phase 09J shift). With both off (current default), the
+                    // tile opens Settings instead of trying to navigate to a
+                    // non-existent tab.
                     child: AppConstants.kEnableAudioTab
                         ? _QuickAction(
                             icon: Icons.headphones_rounded,
@@ -124,14 +131,21 @@ class HomeScreen extends StatelessWidget {
                             subtitle: 'Listen & reflect',
                             onTap: () => appState.selectTab(4),
                           )
-                        : _QuickAction(
-                            icon: Icons.storefront_rounded,
-                            color: AppColors.softRose,
-                            label: 'Shop',
-                            subtitle: 'Curated resources',
-                            // With Audio hidden, Shop shifts from index 5 to 4.
-                            onTap: () => appState.selectTab(4),
-                          ),
+                        : AppConstants.kEnableShopTab
+                            ? _QuickAction(
+                                icon: Icons.storefront_rounded,
+                                color: AppColors.softRose,
+                                label: 'Shop',
+                                subtitle: 'Curated resources',
+                                onTap: () => appState.selectTab(4),
+                              )
+                            : _QuickAction(
+                                icon: Icons.tune_rounded,
+                                color: AppColors.slate,
+                                label: 'Settings',
+                                subtitle: 'Privacy & preferences',
+                                onTap: () => AppRoutes.openSettings(context),
+                              ),
                   ),
                 ],
               ),
@@ -143,24 +157,30 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 26),
               ],
-              const AppSectionHeader(
-                title: 'Curated for you',
-                subtitle: 'Hand-picked resources to deepen your walk',
-              ),
-              const AffiliateBanner(
-                type: BannerType.amazonBook,
-                asin: 'B07BDCNF2J',
-                category: 'Staff pick',
-                title: 'NIV Study Bible',
-                subtitle: 'Trusted study edition · Amazon',
-              ),
-              const SizedBox(height: 10),
-              const AffiliateBanner(
-                type: BannerType.audible,
-                category: 'Listen',
-                title: 'Audible — faith audiobooks',
-                subtitle: 'Free trial · Listen on the go',
-              ),
+              // "Curated for you" affiliate section is gated behind
+              // kEnableShopTab (Phase 09Q). When the flag is off the section
+              // disappears entirely so no user-reachable surface routes to
+              // an Amazon affiliate URL with a dead ASIN.
+              if (AppConstants.kEnableShopTab) ...[
+                const AppSectionHeader(
+                  title: 'Curated for you',
+                  subtitle: 'Hand-picked resources to deepen your walk',
+                ),
+                const AffiliateBanner(
+                  type: BannerType.amazonBook,
+                  asin: 'B07BDCNF2J',
+                  category: 'Staff pick',
+                  title: 'NIV Study Bible',
+                  subtitle: 'Trusted study edition · Amazon',
+                ),
+                const SizedBox(height: 10),
+                const AffiliateBanner(
+                  type: BannerType.audible,
+                  category: 'Listen',
+                  title: 'Audible — faith audiobooks',
+                  subtitle: 'Free trial · Listen on the go',
+                ),
+              ],
             ],
           );
         },

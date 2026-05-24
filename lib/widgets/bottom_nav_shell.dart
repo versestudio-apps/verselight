@@ -13,16 +13,17 @@ class BottomNavShell extends StatelessWidget {
   const BottomNavShell({super.key});
 
   // Audio tab is gated behind AppConstants.kEnableAudioTab (Phase 09J).
-  // When the flag is false, Audio is dropped from both screens and
-  // destinations so the visible bottom-nav layout stays in sync with the
-  // index space used by AppState.selectTab.
+  // Shop tab is gated behind AppConstants.kEnableShopTab (Phase 09Q — dead
+  // ASIN risk). When either flag is false, the matching destination is
+  // dropped from both lists so the visible bottom-nav layout stays in sync
+  // with the index space used by AppState.selectTab.
   static List<Widget> get _screens => [
         const HomeScreen(),
         const DevotionalScreen(),
         const JournalScreen(),
         const PlansScreen(),
         if (AppConstants.kEnableAudioTab) const AudioScreen(),
-        const ShopScreen(),
+        if (AppConstants.kEnableShopTab) const ShopScreen(),
       ];
 
   static List<NavigationDestination> get _destinations => [
@@ -54,12 +55,13 @@ class BottomNavShell extends StatelessWidget {
             selectedIcon: Icon(Icons.headphones_rounded),
             label: 'Audio',
           ),
-        const NavigationDestination(
-          // Storefront = curated resources, less "sales-y" than shopping_bag.
-          icon: Icon(Icons.storefront_outlined),
-          selectedIcon: Icon(Icons.storefront_rounded),
-          label: 'Shop',
-        ),
+        if (AppConstants.kEnableShopTab)
+          const NavigationDestination(
+            // Storefront = curated resources, less "sales-y" than shopping_bag.
+            icon: Icon(Icons.storefront_outlined),
+            selectedIcon: Icon(Icons.storefront_rounded),
+            label: 'Shop',
+          ),
       ];
 
   @override

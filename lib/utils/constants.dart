@@ -33,6 +33,36 @@ class AppConstants {
   ///   4. Flip this flag to true.
   static const bool kEnableAudioTab = false;
 
+  /// Master switch for the Shop tab + affiliate banner surface.
+  ///
+  /// When false (Phase 09Q default): the Shop tab is removed from bottom
+  /// navigation, the Shop quick-access tile on Home is replaced by a Settings
+  /// tile, the "Curated for you" section on Home is hidden entirely, and the
+  /// Audible banner at the end of the Devotional list is hidden. With the
+  /// flag off, no UI surface in the app routes a user to an Amazon affiliate
+  /// URL, so dead ASINs cannot be hit by a store reviewer or end user.
+  ///
+  /// Rationale (Phase 09Q): Fire Tablet QA (Phase 09P) verified all 4 ASINs
+  /// in `AffiliateService.bibleBooks` return 404 from Amazon. Shipping the
+  /// Shop surface with dead links would fail Amazon Appstore review and
+  /// breach the Amazon Associates Operating Agreement (linking to products
+  /// the operator has not verified exist).
+  ///
+  /// `ShopScreen`, `AffiliateService`, `AffiliateBanner`, and the ASIN list
+  /// in `affiliate_service.dart` are intentionally kept so this flag can flip
+  /// back to true in one line once the ASINs are replaced with live products
+  /// and the Amazon Associates tag is wired.
+  ///
+  /// Re-enable checklist (before flipping to true):
+  ///   1. Replace each ASIN in `lib/services/affiliate_service.dart` with a
+  ///      live Amazon product id. Verify each with
+  ///      `curl -s -o /dev/null -L -w "%{http_code}" https://www.amazon.com/dp/<ASIN>`
+  ///      and confirm 200.
+  ///   2. Replace `amazonTrackingId` placeholder with the real approved
+  ///      Amazon Associates tag.
+  ///   3. Sanity-check the live shop on a fresh emulator install.
+  static const bool kEnableShopTab = false;
+
   /// Master switch for the in-app purchase surface.
   ///
   /// When false (current default — Phase 09H):

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/devotional_filters.dart';
 import '../data/sample_devotionals.dart';
+import '../utils/constants.dart';
 import '../utils/devotional_images.dart';
 import '../utils/routes.dart';
 import '../utils/theme.dart';
@@ -141,17 +142,21 @@ class _DevotionalScreenState extends State<DevotionalScreen> {
                     },
                   ),
                 ),
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 8, 16, 24),
-                  child: AffiliateBanner(
-                    type: BannerType.audible,
-                    category: 'Listen',
-                    title: 'Audio devotionals',
-                    subtitle: 'Try Audible free · Bible on audio',
+              // Audible footer banner is gated behind kEnableShopTab
+              // (Phase 09Q) so the Devotional list doesn't surface an
+              // Amazon affiliate link while the affiliate program is off.
+              if (AppConstants.kEnableShopTab)
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 24),
+                    child: AffiliateBanner(
+                      type: BannerType.audible,
+                      category: 'Listen',
+                      title: 'Audio devotionals',
+                      subtitle: 'Try Audible free · Bible on audio',
+                    ),
                   ),
                 ),
-              ),
             ],
           );
         },

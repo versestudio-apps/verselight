@@ -1,6 +1,22 @@
 import '../models/devotional.dart';
 
 /// Offline devotional catalog (10 entries). Stable ids: devo-1 … devo-10.
+///
+/// LICENSING NOTE (Phase 09L — Bible translation license review):
+/// Prior versions of this file shipped verse text labelled "(NIV)" — the
+/// New International Version is © Biblica, Inc. and requires a license for
+/// commercial / app distribution. To make the app safe to ship to the
+/// Amazon Appstore without a Biblica licensing agreement, every `verseText`
+/// in this file is now an **original devotional paraphrase** written for
+/// VerseLight, not a quote from any specific copyrighted translation. The
+/// `verseReference` keeps the canonical Book Chapter:Verse pointer so users
+/// can open their own Bible to read the underlying scripture in the
+/// translation of their choice.
+///
+/// When wiring a licensed translation later (NABRE / RSV-CE / ESV / NIV with
+/// permission, or a public-domain translation such as Douay-Rheims or KJV),
+/// replace each `verseText` with the licensed wording and reinstate a
+/// translation suffix in `verseReference`.
 const List<Devotional> sampleDevotionals = [
   Devotional(
     id: 'devo-1',
@@ -9,9 +25,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['trust', 'wisdom'],
     mood: 'Steady',
     durationMinutes: 4,
-    verseReference: 'Proverbs 3:5 (NIV)',
+    verseReference: 'Proverbs 3:5',
     verseText:
-        '"Trust in the Lord with all your heart and lean not on your own understanding."',
+        'Lean on God with the whole of who you are, rather than the limits of what you can see.',
     preview: 'When life feels uncertain, surrender is an act of faith—not failure.',
     reflection:
         'Trust is not the absence of questions. It is choosing God\'s wisdom over the weight of trying to control everything alone.',
@@ -29,9 +45,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['peace', 'worry'],
     mood: 'Calm',
     durationMinutes: 4,
-    verseReference: 'Philippians 4:6–7 (NIV)',
+    verseReference: 'Philippians 4:6–7',
     verseText:
-        '"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."',
+        'Carry every worry into prayer with a grateful heart, and let God hold what your hands cannot.',
     preview: 'Anxiety is real—and so is the peace God offers when we bring Him our worries.',
     reflection:
         'Paul wrote about peace that guards hearts and minds. Thanksgiving opens the door for that guard to take its post.',
@@ -48,9 +64,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['hope', 'waiting'],
     mood: 'Hopeful',
     durationMinutes: 5,
-    verseReference: 'Jeremiah 29:11 (NIV)',
+    verseReference: 'Jeremiah 29:11',
     verseText:
-        '"For I know the plans I have for you," declares the Lord, "plans to give you hope and a future."',
+        'God holds plans shaped by hope and a future, even when the next step is still hidden from you.',
     preview: 'God\'s promise was spoken to people still waiting—not those who had already arrived.',
     reflection:
         'Hope in Scripture often looks like faithfulness in the in-between. God is still writing your story.',
@@ -68,8 +84,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['stillness', 'rest'],
     mood: 'Quiet',
     durationMinutes: 3,
-    verseReference: 'Psalm 46:10 (NIV)',
-    verseText: '"Be still, and know that I am God."',
+    verseReference: 'Psalm 46:10',
+    verseText:
+        'Slow down. In the quiet, remember who God is—and that you are not Him.',
     preview: 'Stillness is a gentle discipline in a noisy world.',
     reflection:
         'When we stop striving, we declare that God is God and we are not. Five quiet minutes can reshape a day.',
@@ -77,7 +94,7 @@ const List<Devotional> sampleDevotionals = [
         'Lord, slow my pace. Teach me to be present with You without performing.',
     journalPrompt:
         'When can you schedule five minutes of stillness this week?',
-    actionStep: 'Set a five-minute timer, breathe, and repeat this verse.',
+    actionStep: 'Set a five-minute timer, breathe, and rest in this verse.',
     isPremium: true,
   ),
   Devotional(
@@ -87,9 +104,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['morning', 'new day'],
     mood: 'Fresh',
     durationMinutes: 3,
-    verseReference: 'Lamentations 3:22–23 (NIV)',
+    verseReference: 'Lamentations 3:22–23',
     verseText:
-        '"His compassions never fail. They are new every morning; great is your faithfulness."',
+        'God\'s mercy is freshly given each morning—never depleted by yesterday\'s wear.',
     preview: 'Each sunrise is an invitation to receive mercy that was not exhausted yesterday.',
     reflection:
         'You do not have to earn a fresh start. God\'s compassion meets you before your to-do list does.',
@@ -106,9 +123,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['sleep', 'rest'],
     mood: 'Gentle',
     durationMinutes: 3,
-    verseReference: 'Psalm 4:8 (NIV)',
+    verseReference: 'Psalm 4:8',
     verseText:
-        '"In peace I will lie down and sleep, for you alone, Lord, make me dwell in safety."',
+        'Sleep finds peace in the One who keeps watch through every night.',
     preview: 'You can lay down the day—not because everything is solved, but because God keeps watch.',
     reflection:
         'Night is a gift: permission to stop producing and to trust the One who neither slumbers nor sleeps.',
@@ -125,8 +142,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['thanks', 'joy'],
     mood: 'Warm',
     durationMinutes: 4,
-    verseReference: '1 Thessalonians 5:18 (NIV)',
-    verseText: '"Give thanks in all circumstances; for this is God\'s will for you in Christ Jesus."',
+    verseReference: '1 Thessalonians 5:18',
+    verseText:
+        'In every season—gentle or hard—gratitude is the posture God invites.',
     preview: 'Gratitude does not deny hardship—it chooses to notice grace in the middle of it.',
     reflection:
         'Thanks shifts our gaze from scarcity to presence. Even small gifts become anchors when we name them.',
@@ -143,9 +161,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['belief', 'courage'],
     mood: 'Bold',
     durationMinutes: 4,
-    verseReference: 'Hebrews 11:1 (NIV)',
+    verseReference: 'Hebrews 11:1',
     verseText:
-        '"Faith is confidence in what we hope for and assurance about what we do not see."',
+        'Faith is a steady confidence in what God has promised, even before our eyes can see it.',
     preview: 'Faith is not blind optimism—it is grounded confidence in a trustworthy God.',
     reflection:
         'Belief often grows in ordinary obedience: showing up, telling the truth, forgiving, trying again.',
@@ -162,8 +180,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['anxiety', 'cast cares'],
     mood: 'Honest',
     durationMinutes: 4,
-    verseReference: '1 Peter 5:7 (NIV)',
-    verseText: '"Cast all your anxiety on him because he cares for you."',
+    verseReference: '1 Peter 5:7',
+    verseText:
+        'Hand your worries to God. His care for you is personal, not abstract.',
     preview: 'Casting anxiety is not a one-time event—it is a rhythm of returning worries to God.',
     reflection:
         'God\'s care is not distant. You are invited to hand Him specifics, not just vague stress.',
@@ -180,9 +199,9 @@ const List<Devotional> sampleDevotionals = [
     tags: ['purpose', 'calling'],
     mood: 'Grounded',
     durationMinutes: 5,
-    verseReference: 'Ephesians 2:10 (NIV)',
+    verseReference: 'Ephesians 2:10',
     verseText:
-        '"We are God\'s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do."',
+        'You are God\'s craftsmanship, shaped for good works He has already prepared along your path.',
     preview: 'Purpose is often found in faithful ordinary moments, not only dramatic milestones.',
     reflection:
         'Your life is not an accident. Today\'s kindness, integrity, and patience can be holy work.',

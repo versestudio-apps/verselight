@@ -5,7 +5,8 @@
 > store-readiness items cần xử lý trước khi upload Amazon Appstore.
 >
 > Phase trail: 09E baseline → 09F+09G signing → 09H IAP gating → 09I Firebase/network →
-> 09J Audio tab gating → 09K Store listing + privacy URL audit (THIS).
+> 09J Audio tab gating → 09K Store listing + privacy URL audit →
+> 09L Bible translation license review (THIS).
 
 ## Severity legend
 
@@ -108,20 +109,20 @@ Full rationale + re-enable checklist in [`../phase-09j-audio-mock-decision/AUDIT
 
 ---
 
-## 7. 🟡 Content review — Catholic devotional wording + Bible translation license
+## 7. ✅ ~~🟡 Bible translation license risk~~ — RESOLVED (Phase 09L)
 
-**Nơi:** [lib/data/sample_devotionals.dart](../../../lib/data/sample_devotionals.dart), [lib/data/sample_plans.dart](../../../lib/data/sample_plans.dart) (nếu có), assets `assets/images/devotional/`.
+**Status:** Phase 09L audited all scripture content trong [`lib/data/sample_devotionals.dart`](../../../lib/data/sample_devotionals.dart) (10 verses) và [`lib/data/sample_plans.dart`](../../../lib/data/sample_plans.dart) (35 verses across 5 plans). Phát hiện toàn bộ 45 verseText được tag `(NIV)` và wording khớp NIV verbatim — copyrighted by Biblica, không có license.
 
-**Status:** Phase 09K **chưa resolve** — vẫn open. Phase 09K là audit URL/listing assets, không review nội dung verse-by-verse.
+**Resolution:** mọi `verseText` được thay bằng **original devotional paraphrase** viết riêng cho VerseLight; mọi `verseReference` được strip suffix `(NIV)`. Mock audio title `"Psalm 23 — NIV"` được đổi thành `"Psalm 23 — narration"`. App giờ không ship bất kỳ translation copyrighted nào.
 
-**Implication:**
-- Amazon Appstore content policy cho Religion/Spirituality category: chấp nhận, nhưng cần:
-  - Không xúc phạm bất kỳ tôn giáo nào khác.
-  - Không claim chữa bệnh / phép màu / lời khuyên y tế.
-  - Bible verses dùng public-domain translation (KJV / Douay-Rheims) hoặc license phù hợp (NIV/ESV/NABRE/RSV cần permission).
-- Tab Shop affiliate dẫn về Amazon book listings → đảm bảo các ASIN trỏ đúng và còn hợp lệ.
+**Affiliate product titles** ("NIV Study Bible" trong [affiliate_service.dart](../../../lib/services/affiliate_service.dart) và [home_screen.dart](../../../lib/screens/home_screen.dart)) được giữ — đây là tên sản phẩm Amazon thật được dùng để link affiliate, không phải quote Bible content.
 
-**Fix:** review nội dung devotional content + verse translation license trước khi flip Amazon Appstore production submit. Owner deliverable — không thể audit từ code đơn thuần.
+Full breakdown trong [`../phase-09l-bible-license-review/AUDIT.md`](../phase-09l-bible-license-review/AUDIT.md).
+
+**Còn lại (out of 09L scope):**
+- (Optional) Decide whether to license a real translation (NABRE / RSV-CE) hoặc swap về public-domain Douay-Rheims khi muốn ship literal scripture thay vì paraphrase.
+- Tab Shop affiliate dẫn về Amazon book listings → đảm bảo các ASIN trỏ đúng và còn hợp lệ (tracking ID placeholder thuộc issue #6).
+- General content policy items (không xúc phạm tôn giáo khác, không claim chữa bệnh) — không phát hiện vi phạm trong content hiện tại, nhưng vẫn nên review lại reflection/prayer prompt trước khi mỗi đợt content mới được merge.
 
 ---
 

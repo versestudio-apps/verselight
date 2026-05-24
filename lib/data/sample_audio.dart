@@ -3,7 +3,7 @@ import '../models/audio_track.dart';
 const List<AudioTrack> sampleAudioTracks = [
   AudioTrack(
     id: 'audio-psalm-23',
-    title: 'Psalm 23 — NIV',
+    title: 'Psalm 23 — narration',
     durationLabel: '3:42',
     subtitle: 'Scripture audio · Free preview',
     isPremium: false,
